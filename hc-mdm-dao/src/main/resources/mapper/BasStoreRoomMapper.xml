@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasStoreRoomMapper">
+	<resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasStoreRoom">
+	    <id column="line_id" property="lineId" jdbcType="INTEGER" />
+		<result column="room_no" property="roomNo" jdbcType="VARCHAR" />
+		<result column="room_name" property="roomName" jdbcType="VARCHAR" />
+		<result column="store_no" property="storeNo" jdbcType="VARCHAR" />
+		<result column="zone_no" property="zoneNo" jdbcType="VARCHAR" />
+		<result column="room_type" property="roomType" jdbcType="VARCHAR" />
+		<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+		<result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		A.line_id,A.room_no, A.room_name, A.store_no,A.zone_no, A.room_type,
+		A.order_no, A.enable_flag,
+		A.creator, A.create_time,
+		A.modifier,
+		A.modify_time, A.remarks
+	</sql>
+	<sql id="condition">
+		<if test="null!=params">
+			<if test="null!=params.queryCondition and ''!=params.queryCondition">
+				${params.queryCondition}
+			</if>
+			<if test="null!=params.roomNo and ''!=params.roomNo">
+				and A.room_no= #{params.roomNo}
+			</if>
+			<if test="null!=params.roomName and ''!=params.roomName">
+				and A.room_name= #{params.roomName}
+			</if>
+			<if test="null!=params.zoneNo and ''!=params.zoneNo">
+				and A.zone_no= #{params.zoneNo}
+			</if>
+			<if test="null!=params.storeNo and ''!=params.storeNo">
+				and A.store_no= #{params.storeNo}
+			</if>			
+		</if>
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_store_room A
+		LEFT JOIN bas_store_zone B ON A.zone_no =B.zone_no and A.store_no=B.store_no
+		WHERE A.line_id = #{lineId,jdbcType=INTEGER}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) as s
+		FROM bas_store_room A
+		LEFT JOIN bas_store_zone B ON A.zone_no = B.zone_no and A.store_no=B.store_no
+		WHERE 1=1
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_store_room A
+		LEFT JOIN bas_store_zone B ON A.zone_no =B.zone_no and A.store_no=B.store_no
+		WHERE 1=1
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField">
+			ORDER BY ${orderByField}
+			<if test="orderByField">
+				${orderBy}
+			</if>
+		</if>
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_store_room A
+		LEFT JOIN bas_store_zone B ON A.zone_no =B.zone_no and A.store_no=B.store_no WHERE 1=1
+		<include refid="condition" />
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		DELETE FROM
+		bas_store_room
+		WHERE line_id = #{lineId,jdbcType=INTEGER}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasStoreRoom">
+		DELETE
+		FROM bas_store_room
+		WHERE line_id = #{lineId,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasStoreRoom">
+		INSERT INTO bas_store_room
+		(line_id,room_no, room_name,store_no, zone_no,
+		room_type, order_no, enable_flag,
+		creator, create_time, modifier,
+		modify_time, remarks)
+		VALUES
+		(#{lineId,jdbcType=INTEGER},#{roomNo,jdbcType=VARCHAR}, #{roomName,jdbcType=VARCHAR},
+		#{storeNo,jdbcType=VARCHAR},#{zoneNo,jdbcType=VARCHAR},
+		#{roomType,jdbcType=VARCHAR},
+		#{orderNo,jdbcType=INTEGER}, #{enableFlag,jdbcType=INTEGER},
+		#{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+		#{modifier,jdbcType=VARCHAR},
+		#{modifyTime,jdbcType=TIMESTAMP},
+		#{remarks,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasStoreRoom">
+		INSERT INTO bas_store_room
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+		    <if test="lineId != null">
+				line_id,
+			</if>
+			<if test="roomNo != null">
+				room_no,
+			</if>
+			<if test="roomName != null">
+				room_name,
+			</if>
+			<if test="storeNo != null">
+				store_no,
+			</if>
+			<if test="zoneNo != null">
+				zone_no,
+			</if>
+			<if test="roomType != null">
+				room_type,
+			</if>
+			<if test="orderNo != null">
+				order_no,
+			</if>
+			<if test="enableFlag != null">
+				enable_flag,
+			</if>
+			<if test="creator != null">
+				creator,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifier != null">
+				modifier,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+		    <if test="lineId != null">
+				#{lineId,jdbcType=INTEGER},
+			</if>
+			<if test="roomNo != null">
+				#{roomNo,jdbcType=VARCHAR},
+			</if>
+			<if test="roomName != null">
+				#{roomName,jdbcType=VARCHAR},
+			</if>
+			<if test="storeNo != null">
+				#{storeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="zoneNo != null">
+				#{zoneNo,jdbcType=VARCHAR},
+			</if>
+			<if test="roomType != null">
+				#{roomType,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				#{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null">
+				#{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null">
+				#{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				#{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasStoreRoom">
+		UPDATE bas_store_room
+		<set>
+		    <if test="roomNo != null">
+				room_no = #{roomNo,jdbcType=VARCHAR},
+			</if>
+			<if test="roomName != null">
+				room_name = #{roomName,jdbcType=VARCHAR},
+			</if>
+			<if test="storeNo != null">
+				store_no = #{storeNo,jdbcType=VARCHAR},
+			</if>
+			<if test="zoneNo != null">
+				zone_no = #{zoneNo,jdbcType=VARCHAR},
+			</if>
+			<if test="roomType != null">
+				room_type = #{roomType,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				order_no = #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null">
+				enable_flag = #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null">
+				creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+		WHERE line_id = #{lineId,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasStoreRoom">
+		UPDATE
+		bas_store_room
+		SET room_no = #{roomNo,jdbcType=VARCHAR},
+		room_name = #{roomName,jdbcType=VARCHAR},
+		store_no = #{storeNo,jdbcType=VARCHAR},
+		zone_no =
+		#{zoneNo,jdbcType=VARCHAR},
+		room_type = #{roomType,jdbcType=VARCHAR},
+		order_no = #{orderNo,jdbcType=INTEGER},
+		enable_flag =
+		#{enableFlag,jdbcType=INTEGER},
+		creator = #{creator,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modifier =
+		#{modifier,jdbcType=VARCHAR},
+		modify_time =
+		#{modifyTime,jdbcType=TIMESTAMP},
+		remarks = #{remarks,jdbcType=VARCHAR}
+		WHERE line_id = #{lineId,jdbcType=INTEGER}
+	</update>
+</mapper>

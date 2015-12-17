@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BillBomListMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BillBomList" >
+    <id column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="SMALLINT" />
+    <result column="parent_order_no" property="parentOrderNo" jdbcType="SMALLINT" />
+    <result column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="bom_purpose" property="bomPurpose" jdbcType="VARCHAR" />
+    <result column="dosage_numerator" property="dosageNumerator" jdbcType="DECIMAL" />
+    <result column="dosage_denominator" property="dosageDenominator" jdbcType="DECIMAL" />
+    <result column="pd_type_no" property="pdTypeNo" jdbcType="VARCHAR" />
+    <result column="store_no" property="storeNo" jdbcType="VARCHAR" />
+    <result column="is_virtual" property="isVirtual" jdbcType="TINYINT" />
+    <result column="update_flag" property="updateFlag" jdbcType="TINYINT" />
+    <result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+    <result column="material_name" property="materialName" jdbcType="VARCHAR" />
+    <result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="style_no" property="styleNo" jdbcType="VARCHAR" />
+    <result column="replace_flag" property="replaceFlag" jdbcType="SMALLINT" />
+    <result column="max_order_no" property="maxOrderNo" jdbcType="SMALLINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    a.line_id, a.bill_no, a.order_no, a.parent_order_no, a.brand_no,a.material_no, a.bom_purpose, a.dosage_numerator, 
+    a.dosage_denominator, a.pd_type_no, a.store_no, a.is_virtual, a.update_flag
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.billNo and ''!=params.billNo " >
+        and a.bill_no= #{params.billNo}
+      </if>  
+      <if test="null!=params.orderNo and ''!=params.orderNo " >
+        and a.parent_order_no= #{params.orderNo}
+      </if>            
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    ,b.material_code,b.material_name,b.size_type_no,b.style_no
+    FROM bill_bom_list a
+    INNER JOIN bas_material b on a.material_no = b.material_no
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bill_bom_list a WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    ,b.material_code,b.material_name,b.size_type_no,b.style_no
+    <!-- ,(SELECT count(1) 
+      FROM bill_bom_list x 
+      INNER JOIN bas_material y 
+      WHERE x.bill_no=a.bill_no and x.order_no=a.parent_order_no and x.material_no=y.material_no and y.size_type_no=b.size_type_no
+      ) replace_flag -->
+     FROM bill_bom_list a
+     INNER JOIN bas_material b on a.material_no = b.material_no
+     WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    ,b.material_code,b.material_name,b.size_type_no,b.style_no
+     FROM bill_bom_list a
+     INNER JOIN bas_material b on a.material_no = b.material_no
+     WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByBillNo" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    ,b.material_code,b.material_name,b.size_type_no,b.style_no
+    FROM bill_bom_list a
+    INNER JOIN bas_material b on a.material_no = b.material_no
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+    ORDER BY a.parent_order_no,a.order_no
+  </select>  
+  <select id="getParentOrderList" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bill_bom_list a
+    WHERE a.bill_no = #{billNo,jdbcType=VARCHAR} AND 
+    a.order_no IN (SELECT parent_order_no FROM bill_bom_list WHERE bill_no=#{billNo,jdbcType=VARCHAR} and order_no=#{orderNo,jdbcType=SMALLINT})
+    ORDER BY a.parent_order_no,a.order_no
+  </select>
+  <select id="getSubOrderList" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bill_bom_list a
+    WHERE a.bill_no = #{billNo,jdbcType=VARCHAR} AND a.parent_order_no=#{orderNo,jdbcType=SMALLINT}
+    ORDER BY a.parent_order_no,a.order_no
+  </select>
+  <select id="checkDoubleBom" resultType="java.lang.Integer" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+   SELECT COUNT(1) 
+   FROM bill_bom_list a
+   WHERE bill_no=#{billNo,jdbcType=VARCHAR} AND a.brand_no=#{brandNo,jdbcType=VARCHAR} 
+   			AND a.material_no=#{materialNo,jdbcType=VARCHAR} AND bom_purpose=#{bomPurpose,jdbcType=VARCHAR}  AND EXISTS
+			(SELECT 1 FROM bas_bom b WHERE a.brand_no=b.brand_no AND a.material_no=b.material_no AND a.bom_purpose=b.bom_purpose)
+  </select>    
+  <select id="selectByBillOrderNo" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    ,(SELECT MAX(order_no) FROM bill_bom_list b WHERE a.bill_no=b.bill_no) max_order_no
+    FROM bill_bom_list a
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR} AND order_no = #{orderNo,jdbcType=INTEGER} 
+  </select>
+  <delete id="deleteByLindIds" parameterType="java.util.ArrayList" >
+    DELETE FROM bill_bom_list 
+    <where>
+    	  <!-- <if test="null!=lineIds and lineIds.length>0"> -->
+		      	line_id in  
+		      	<foreach item="item" index="index" collection="lineIds" 
+		                    open="(" separator="," close=")">
+		                   #{item}
+		       </foreach>
+	      <!-- </if> -->
+    </where>
+  </delete>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM bill_bom_list
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    DELETE FROM bill_bom_list
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="lineId" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    INSERT INTO bill_bom_list (bill_no, order_no, 
+      parent_order_no, brand_no,material_no, bom_purpose, 
+      dosage_numerator, dosage_denominator, pd_type_no, 
+      store_no, is_virtual, update_flag
+      )
+    SELECT #{billNo,jdbcType=VARCHAR}, 
+      <choose>
+      	<when test="-1==orderNo">
+      		(SELECT COALESCE(MAX(order_no),0)+1 FROM bill_bom_list WHERE bill_no=#{billNo,jdbcType=VARCHAR}),
+      	</when>
+      	<otherwise>
+      		#{orderNo,jdbcType=SMALLINT},
+      	</otherwise>
+      </choose>
+      #{parentOrderNo,jdbcType=SMALLINT}, #{brandNo,jdbcType=VARCHAR},#{materialNo,jdbcType=VARCHAR}, #{bomPurpose,jdbcType=VARCHAR}, 
+      #{dosageNumerator,jdbcType=DECIMAL}, #{dosageDenominator,jdbcType=DECIMAL}, #{pdTypeNo,jdbcType=VARCHAR}, 
+      #{storeNo,jdbcType=VARCHAR}, #{isVirtual,jdbcType=TINYINT}, #{updateFlag,jdbcType=TINYINT}
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    INSERT INTO bill_bom_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="billNo != null" >
+        bill_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="parentOrderNo != null" >
+        parent_order_no,
+      </if>
+      <if test="brandNo != null" >
+        brand_no,
+      </if>
+      <if test="materialNo != null" >
+        material_no,
+      </if>
+      <if test="bomPurpose != null" >
+        bom_purpose,
+      </if>
+      <if test="dosageNumerator != null" >
+        dosage_numerator,
+      </if>
+      <if test="dosageDenominator != null" >
+        dosage_denominator,
+      </if>
+      <if test="pdTypeNo != null" >
+        pd_type_no,
+      </if>
+      <if test="storeNo != null" >
+        store_no,
+      </if>
+      <if test="isVirtual != null" >
+        is_virtual,
+      </if>
+      <if test="updateFlag != null" >
+        update_flag,
+      </if>
+    </trim>
+    <trim  suffixOverrides="," >
+      SELECT 
+      <if test="billNo != null" >
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        <choose>
+      		<when test="-1==orderNo">
+      			(SELECT COALESCE(MAX(order_no),0)+1 FROM bill_bom_list WHERE bill_no=#{billNo,jdbcType=VARCHAR}),
+      		</when>
+      		<otherwise>
+      			#{orderNo,jdbcType=SMALLINT},
+      		</otherwise>
+      	</choose>
+      </if>
+      <if test="parentOrderNo != null" >
+        #{parentOrderNo,jdbcType=SMALLINT},
+      </if>
+      <if test="brandNo != null" >
+        #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNo != null" >
+        #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bomPurpose != null" >
+        #{bomPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageNumerator != null" >
+        #{dosageNumerator,jdbcType=DECIMAL},
+      </if>
+      <if test="dosageDenominator != null" >
+        #{dosageDenominator,jdbcType=DECIMAL},
+      </if>
+      <if test="pdTypeNo != null" >
+        #{pdTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeNo != null" >
+        #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isVirtual != null" >
+        #{isVirtual,jdbcType=TINYINT},
+      </if>
+      <if test="updateFlag != null" >
+        #{updateFlag,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    UPDATE bill_bom_list
+    <set >
+      <if test="billNo != null" >
+        bill_no = #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=SMALLINT},
+      </if>
+      <if test="parentOrderNo != null" >
+        parent_order_no = #{parentOrderNo,jdbcType=SMALLINT},
+      </if>
+      <if test="brandNo != null" >
+        brand_no = #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNo != null" >
+        material_no = #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bomPurpose != null" >
+        bom_purpose = #{bomPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageNumerator != null" >
+        dosage_numerator = #{dosageNumerator,jdbcType=DECIMAL},
+      </if>
+      <if test="dosageDenominator != null" >
+        dosage_denominator = #{dosageDenominator,jdbcType=DECIMAL},
+      </if>
+      <if test="pdTypeNo != null" >
+        pd_type_no = #{pdTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeNo != null" >
+        store_no = #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isVirtual != null" >
+        is_virtual = #{isVirtual,jdbcType=TINYINT},
+      </if>
+      <if test="updateFlag != null" >
+        update_flag = #{updateFlag,jdbcType=TINYINT},
+      </if>
+    </set>
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BillBomList" >
+    UPDATE bill_bom_list
+    SET bill_no = #{billNo,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=SMALLINT},
+      parent_order_no = #{parentOrderNo,jdbcType=SMALLINT},
+	  brand_no = #{brandNo,jdbcType=VARCHAR},
+      material_no = #{materialNo,jdbcType=VARCHAR},
+      bom_purpose = #{bomPurpose,jdbcType=VARCHAR},
+      dosage_numerator = #{dosageNumerator,jdbcType=DECIMAL},
+      dosage_denominator = #{dosageDenominator,jdbcType=DECIMAL},
+      pd_type_no = #{pdTypeNo,jdbcType=VARCHAR},
+      store_no = #{storeNo,jdbcType=VARCHAR},
+      is_virtual = #{isVirtual,jdbcType=TINYINT},
+      update_flag = #{updateFlag,jdbcType=TINYINT}
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 以下为替代表打横相关 -->
+  <!-- 不根据数据静态打横，默认支持20列 -->
+  <resultMap id="RowColWrapModelMap" type="com.hc.scm.common.model.RowColWrapModel" >
+ 	 	<result column="f1" property="f1" jdbcType="VARCHAR" />
+ 	 	<result column="f2" property="f2" jdbcType="VARCHAR" />
+ 	 	<result column="f3" property="f3" jdbcType="VARCHAR" />
+ 	 	<result column="f4" property="f4" jdbcType="VARCHAR" />
+ 	 	<result column="f5" property="f5" jdbcType="VARCHAR" />
+ 	 	<result column="f6" property="f6" jdbcType="VARCHAR" />
+ 	 	<result column="f7" property="f7" jdbcType="VARCHAR" />
+ 	 	<result column="f8" property="f8" jdbcType="VARCHAR" />
+ 	 	<result column="f9" property="f9" jdbcType="VARCHAR" />
+ 	 	<result column="f10" property="f10" jdbcType="VARCHAR" />
+ 	 	<result column="f11" property="f11" jdbcType="VARCHAR" />
+ 	 	<result column="f12" property="f12" jdbcType="VARCHAR" />
+ 	 	<result column="f13" property="f13" jdbcType="VARCHAR" />
+ 	 	<result column="f14" property="f14" jdbcType="VARCHAR" />
+ 	 	<result column="f15" property="f15" jdbcType="VARCHAR" />
+ 	 	<result column="f16" property="f16" jdbcType="VARCHAR" />
+ 	 	<result column="f17" property="f17" jdbcType="VARCHAR" />
+ 	 	<result column="f18" property="f18" jdbcType="VARCHAR" />
+ 	 	<result column="f19" property="f19" jdbcType="VARCHAR" />
+ 	 	<result column="f20" property="f20" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <!-- 替代表打横ResultMap(为了适合基类特殊处理，通过别名处理同时newSizeTypeNo这个值通过前台设置进去) -->
+  <resultMap id="BillBomListSizeDataMap" type="com.hc.scm.mdm.dao.entity.BillBomListSize" extends="RowColWrapModelMap">
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="SMALLINT" />
+    <result column="old_size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="new_size_type_no" property="newSizeTypeNo" jdbcType="VARCHAR" />
+    <result column="old_size_no" property="sizeNo" jdbcType="VARCHAR" />
+    <result column="new_size_no" property="sizeValue" jdbcType="VARCHAR" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+    <result column="material_name" property="materialName" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="BomListSizeHeadMap" type="com.hc.scm.mdm.dao.model.BaseSizeModel" extends="RowColWrapModelMap">
+    <result column="old_size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+  </resultMap>
+    
+  <sql id="Vo_MaxColumn_List" >
+	max(case when b.order_no='1' then b.size_code else '' end) f1,
+  	max(case when b.order_no='2' then b.size_code else '' end) f2,
+  	max(case when b.order_no='3' then b.size_code else '' end) f3,
+  	max(case when b.order_no='4' then b.size_code else '' end) f4,
+  	max(case when b.order_no='5' then b.size_code else '' end) f5,
+  	max(case when b.order_no='6' then b.size_code else '' end) f6,
+  	max(case when b.order_no='7' then b.size_code else '' end) f7,
+  	max(case when b.order_no='8' then b.size_code else '' end) f8,
+  	max(case when b.order_no='9' then b.size_code else '' end) f9,
+  	max(case when b.order_no='10' then b.size_code else '' end) f10,
+  	max(case when b.order_no='11' then b.size_code else '' end) f11,
+  	max(case when b.order_no='12' then b.size_code else '' end) f12,
+  	max(case when b.order_no='13' then b.size_code else '' end) f13,
+  	max(case when b.order_no='14' then b.size_code else '' end) f14,
+  	max(case when b.order_no='15' then b.size_code else '' end) f15,
+  	max(case when b.order_no='16' then b.size_code else '' end) f16,
+  	max(case when b.order_no='17' then b.size_code else '' end) f17,
+  	max(case when b.order_no='18' then b.size_code else '' end) f18,
+  	max(case when b.order_no='19' then b.size_code else '' end) f19,
+  	max(case when b.order_no='20' then b.size_code else '' end) f20
+  </sql>
+  
+    <sql id="Vo_Dt_MaxColumn_List" >
+	max(case when b.order_no='1' then e.size_code else '' end) f1,
+  	max(case when b.order_no='2' then e.size_code else '' end) f2,
+  	max(case when b.order_no='3' then e.size_code else '' end) f3,
+  	max(case when b.order_no='4' then e.size_code else '' end) f4,
+  	max(case when b.order_no='5' then e.size_code else '' end) f5,
+  	max(case when b.order_no='6' then e.size_code else '' end) f6,
+  	max(case when b.order_no='7' then e.size_code else '' end) f7,
+  	max(case when b.order_no='8' then e.size_code else '' end) f8,
+  	max(case when b.order_no='9' then e.size_code else '' end) f9,
+  	max(case when b.order_no='10' then e.size_code else '' end) f10,
+  	max(case when b.order_no='11' then e.size_code else '' end) f11,
+  	max(case when b.order_no='12' then e.size_code else '' end) f12,
+  	max(case when b.order_no='13' then e.size_code else '' end) f13,
+  	max(case when b.order_no='14' then e.size_code else '' end) f14,
+  	max(case when b.order_no='15' then e.size_code else '' end) f15,
+  	max(case when b.order_no='16' then e.size_code else '' end) f16,
+  	max(case when b.order_no='17' then e.size_code else '' end) f17,
+  	max(case when b.order_no='18' then e.size_code else '' end) f18,
+  	max(case when b.order_no='19' then e.size_code else '' end) f19,
+  	max(case when b.order_no='20' then e.size_code else '' end) f20
+  </sql>
+    
+  <!-- 当前物料的父级码组的打横 -->
+  <select id="SelectListByVoBillBomListSizeHead" resultMap="BomListSizeHeadMap" parameterType="map">
+  	SELECT b.size_type_no as old_size_type_no,
+  				<include refid="Vo_MaxColumn_List" />
+	FROM bill_bom_list a
+	INNER JOIN bas_material c on a.material_no = c.material_no
+	INNER JOIN bas_size b on c.size_type_no=b.size_type_no
+	WHERE a.bill_no= #{billNo} and a.order_no=#{orderNo}
+	GROUP BY b.size_type_no
+  </select>
+  
+  <!-- 当前物料的打横数据 -->
+  <select id="SelectListByVoBillBomListSizeData" resultMap="BillBomListSizeDataMap" parameterType="map">
+	SELECT a.bill_no,a.order_no,a.old_size_type_no,a.new_size_type_no,c.material_no,d.material_code,d.material_name,
+  				<include refid="Vo_Dt_MaxColumn_List" />
+	FROM bill_bom_list_size a
+	INNER JOIN bas_size b on a.old_size_type_no=b.size_type_no and a.old_size_no=b.size_no
+  	INNER JOIN  bas_size e on a.new_size_type_no=e.size_type_no and a.new_size_no=e.size_no
+  	INNER JOIN bill_bom_list c on a.bill_no = c.bill_no and a.order_no = c.order_no
+  	INNER JOIN bas_material d on c.material_no = d.material_no
+	WHERE c.bill_no= #{billNo} and c.parent_order_no=#{orderNo}
+	GROUP BY a.bill_no,a.order_no,a.old_size_type_no,a.new_size_type_no,c.material_no,d.material_code,d.material_name
+  </select>  
+</mapper>

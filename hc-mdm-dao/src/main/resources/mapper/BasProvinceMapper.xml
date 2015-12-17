@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasProvinceMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasProvince" >
+    <id column="province_no" property="provinceNo" jdbcType="VARCHAR" />
+    <result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+    <result column="province_lname" property="provinceLname" jdbcType="VARCHAR" />
+    <result column="province_opcode" property="provinceOpcode" jdbcType="CHAR" />
+    <result column="country_no" property="countryNo" jdbcType="VARCHAR" />
+    <result column="direct_controlled" property="directControlled" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    province_no, province_name, province_lname, province_opcode, country_no, direct_controlled, 
+    order_no, enable_flag, creator, create_time, modifier, modify_time, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.provinceNo and ''!=params.provinceNo" >
+        and province_no = #{params.provinceNo}
+      </if>
+      <if test="null!=params.countryNo and ''!=params.countryNo" >
+        and country_no = #{params.countryNo}
+      </if>
+	  <if test="null!=params.provinceName and ''!=params.provinceName" >
+        and province_name like concat('%',#{params.provinceName},'%')
+      </if>    
+	  <if test="null!=params.provinceOpcode and ''!=params.provinceOpcode" >
+        and province_opcode like concat('%',#{params.provinceOpcode},'%')
+      </if> 
+          	<!--启用状态过滤-->
+    	<if test="null!=params.enableFlag and ''!=params.enableFlag">
+    		and enable_flag =#{params.enableFlag}
+    	</if>            
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_province
+    WHERE province_no = #{provinceNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_province WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_province WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_province WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_province
+    WHERE province_no = #{provinceNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasProvince" >
+    DELETE FROM bas_province
+    WHERE province_no = #{provinceNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasProvince" >
+    INSERT INTO bas_province (province_no, province_name, province_lname, 
+      province_opcode, country_no, direct_controlled, 
+      order_no, enable_flag, creator, 
+      create_time, modifier, modify_time, 
+      remarks)
+    VALUES (#{provinceNo,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{provinceLname,jdbcType=VARCHAR}, 
+      #{provinceOpcode,jdbcType=CHAR}, #{countryNo,jdbcType=VARCHAR}, #{directControlled,jdbcType=INTEGER}, 
+      #{orderNo,jdbcType=INTEGER}, #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasProvince" >
+    INSERT INTO bas_province
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="provinceNo != null" >
+        province_no,
+      </if>
+      <if test="provinceName != null" >
+        province_name,
+      </if>
+      <if test="provinceLname != null" >
+        province_lname,
+      </if>
+      <if test="provinceOpcode != null" >
+        province_opcode,
+      </if>
+      <if test="countryNo != null" >
+        country_no,
+      </if>
+      <if test="directControlled != null" >
+        direct_controlled,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="provinceNo != null" >
+        #{provinceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null" >
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceLname != null" >
+        #{provinceLname,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceOpcode != null" >
+        #{provinceOpcode,jdbcType=CHAR},
+      </if>
+      <if test="countryNo != null" >
+        #{countryNo,jdbcType=VARCHAR},
+      </if>
+      <if test="directControlled != null" >
+        #{directControlled,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasProvince" >
+    UPDATE bas_province
+    <set >
+      <if test="provinceName != null" >
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceLname != null" >
+        province_lname = #{provinceLname,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceOpcode != null" >
+        province_opcode = #{provinceOpcode,jdbcType=CHAR},
+      </if>
+      <if test="countryNo != null" >
+        country_no = #{countryNo,jdbcType=VARCHAR},
+      </if>
+      <if test="directControlled != null" >
+        direct_controlled = #{directControlled,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE province_no = #{provinceNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasProvince" >
+    UPDATE bas_province
+    SET province_name = #{provinceName,jdbcType=VARCHAR},
+      province_lname = #{provinceLname,jdbcType=VARCHAR},
+      province_opcode = #{provinceOpcode,jdbcType=CHAR},
+      country_no = #{countryNo,jdbcType=VARCHAR},
+      direct_controlled = #{directControlled,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE province_no = #{provinceNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

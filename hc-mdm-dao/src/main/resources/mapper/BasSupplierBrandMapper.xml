@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasSupplierBrandMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasSupplierBrand" >
+    <id column="brand_id" property="brandId" jdbcType="INTEGER" />
+    <result column="supplier_no" property="supplierNo" jdbcType="VARCHAR" />
+    <result column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    brand_id, supplier_no, brand_no, order_no, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.supplierNo and ''!=params.supplierNo">
+				and supplier_no = #{params.supplierNo}
+	  </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_supplier_brand
+    WHERE brand_id = #{brandId,jdbcType=INTEGER}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_supplier_brand WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_supplier_brand WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_supplier_brand WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    DELETE FROM bas_supplier_brand
+    WHERE brand_id = #{brandId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierBrand" >
+    DELETE FROM bas_supplier_brand
+    WHERE brand_id = #{brandId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="brandId" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierBrand" >
+    INSERT INTO bas_supplier_brand (supplier_no, brand_no, 
+      order_no, remarks)
+    VALUES (#{supplierNo,jdbcType=VARCHAR}, #{brandNo,jdbcType=VARCHAR}, 
+      #{orderNo,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective"  useGeneratedKeys="true" keyProperty="brandId" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierBrand" >
+    INSERT INTO bas_supplier_brand
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="supplierNo != null" >
+        supplier_no,
+      </if>
+      <if test="brandNo != null" >
+        brand_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="supplierNo != null" >
+        #{supplierNo,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNo != null" >
+        #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierBrand" >
+    UPDATE bas_supplier_brand
+    <set >
+      <if test="supplierNo != null" >
+        supplier_no = #{supplierNo,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNo != null" >
+        brand_no = #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE brand_id = #{brandId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierBrand" >
+    UPDATE bas_supplier_brand
+    SET supplier_no = #{supplierNo,jdbcType=VARCHAR},
+      brand_no = #{brandNo,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE brand_id = #{brandId,jdbcType=INTEGER}
+  </update>
+</mapper>

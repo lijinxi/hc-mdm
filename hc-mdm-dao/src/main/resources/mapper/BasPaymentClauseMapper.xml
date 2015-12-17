@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasPaymentClauseMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasPaymentClause" >
+    <id column="payment_clause_no" property="paymentClauseNo" jdbcType="VARCHAR" />
+    <result column="payment_clause_name" property="paymentClauseName" jdbcType="VARCHAR" />
+    <result column="payment_clause_type" property="paymentClauseType" jdbcType="VARCHAR" />
+    <result column="credit_days" property="creditDays" jdbcType="INTEGER" />
+    <result column="preferential_days" property="preferentialDays" jdbcType="INTEGER" />
+    <result column="due_date_method" property="dueDateMethod" jdbcType="VARCHAR" />
+    <result column="preferential_rate" property="preferentialRate" jdbcType="DECIMAL" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="preferential_way" property="preferentialWay" jdbcType="VARCHAR" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    payment_clause_no, payment_clause_name, payment_clause_type, credit_days, preferential_days, 
+    due_date_method, preferential_rate, order_no, preferential_way, enable_flag, creator, 
+    create_time, modifier, modify_time, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.paymentClauseNo and ''!=params.paymentClauseNo">
+			and payment_clause_no = #{params.paymentClauseNo}
+	  </if>      
+      <if test="null!=params.paymentClauseName and ''!=params.paymentClauseName">
+			and payment_clause_name like concat('%',#{params.paymentClauseName},'%')  
+	 </if> 
+	 <if test="null!=params.paymentClauseType and ''!=params.paymentClauseType">
+			and payment_clause_type =#{params.paymentClauseType} 
+	 </if>   
+	 <if test="null!=params.enableFlag and ''!=params.enableFlage">
+			and enable_flag like concat('%',#{params.enableFlag},'%')  
+	 </if>      
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_payment_clause
+    WHERE payment_clause_no = #{paymentClauseNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_payment_clause WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_payment_clause WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_payment_clause WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_payment_clause
+    WHERE payment_clause_no = #{paymentClauseNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasPaymentClause" >
+    DELETE FROM bas_payment_clause
+    WHERE payment_clause_no = #{paymentClauseNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasPaymentClause" >
+    INSERT INTO bas_payment_clause (payment_clause_no, payment_clause_name, 
+      payment_clause_type, credit_days, preferential_days, 
+      due_date_method, preferential_rate, order_no, 
+      preferential_way, enable_flag, creator, 
+      create_time, modifier, modify_time, 
+      remarks)
+    VALUES (#{paymentClauseNo,jdbcType=VARCHAR}, #{paymentClauseName,jdbcType=VARCHAR}, 
+      #{paymentClauseType,jdbcType=VARCHAR}, #{creditDays,jdbcType=INTEGER}, #{preferentialDays,jdbcType=INTEGER}, 
+      #{dueDateMethod,jdbcType=VARCHAR}, #{preferentialRate,jdbcType=DECIMAL}, #{orderNo,jdbcType=INTEGER}, 
+      #{preferentialWay,jdbcType=VARCHAR}, #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasPaymentClause" >
+    INSERT INTO bas_payment_clause
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="paymentClauseNo != null" >
+        payment_clause_no,
+      </if>
+      <if test="paymentClauseName != null" >
+        payment_clause_name,
+      </if>
+      <if test="paymentClauseType != null" >
+        payment_clause_type,
+      </if>
+      <if test="creditDays != null" >
+        credit_days,
+      </if>
+      <if test="preferentialDays != null" >
+        preferential_days,
+      </if>
+      <if test="dueDateMethod != null" >
+        due_date_method,
+      </if>
+      <if test="preferentialRate != null" >
+        preferential_rate,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="preferentialWay != null" >
+        preferential_way,
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="paymentClauseNo != null" >
+        #{paymentClauseNo,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentClauseName != null" >
+        #{paymentClauseName,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentClauseType != null" >
+        #{paymentClauseType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditDays != null" >
+        #{creditDays,jdbcType=INTEGER},
+      </if>
+      <if test="preferentialDays != null" >
+        #{preferentialDays,jdbcType=INTEGER},
+      </if>
+      <if test="dueDateMethod != null" >
+        #{dueDateMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="preferentialRate != null" >
+        #{preferentialRate,jdbcType=DECIMAL},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="preferentialWay != null" >
+        #{preferentialWay,jdbcType=VARCHAR},
+      </if>
+      <if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasPaymentClause" >
+    UPDATE bas_payment_clause
+    <set >
+      <if test="paymentClauseName != null" >
+        payment_clause_name = #{paymentClauseName,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentClauseType != null" >
+        payment_clause_type = #{paymentClauseType,jdbcType=VARCHAR},
+      </if>
+      <if test="creditDays != null" >
+        credit_days = #{creditDays,jdbcType=INTEGER},
+      </if>
+      <if test="preferentialDays != null" >
+        preferential_days = #{preferentialDays,jdbcType=INTEGER},
+      </if>
+      <if test="dueDateMethod != null" >
+        due_date_method = #{dueDateMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="preferentialRate != null" >
+        preferential_rate = #{preferentialRate,jdbcType=DECIMAL},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="preferentialWay != null" >
+        preferential_way = #{preferentialWay,jdbcType=VARCHAR},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE payment_clause_no = #{paymentClauseNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasPaymentClause" >
+    UPDATE bas_payment_clause
+    SET payment_clause_name = #{paymentClauseName,jdbcType=VARCHAR},
+      payment_clause_type = #{paymentClauseType,jdbcType=VARCHAR},
+      credit_days = #{creditDays,jdbcType=INTEGER},
+      preferential_days = #{preferentialDays,jdbcType=INTEGER},
+      due_date_method = #{dueDateMethod,jdbcType=VARCHAR},
+      preferential_rate = #{preferentialRate,jdbcType=DECIMAL},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      preferential_way = #{preferentialWay,jdbcType=VARCHAR},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE payment_clause_no = #{paymentClauseNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

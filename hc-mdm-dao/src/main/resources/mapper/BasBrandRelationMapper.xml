@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasBrandRelationMapper">
+	<resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasBrandRelation">
+		<id column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+		<result column="division_no" property="divisionNo" jdbcType="VARCHAR" />
+		<result column="company_no" property="companyNo" jdbcType="VARCHAR" />
+		<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="BasBrandRelationMap" type="com.hc.scm.mdm.dao.model.BasBrandRelation">
+		<id column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+		<result column="brand_cname" property="brandCname" jdbcType="VARCHAR" />
+		<result column="division_no" property="divisionNo" jdbcType="VARCHAR" />
+		<result column="division_name" property="divisionName"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		brand_no, division_no, company_no, order_no, creator, create_time, modifier,
+		modify_time,
+		remarks
+	</sql>
+	<sql id="BasBrandRelationMap_Column_List">
+		a.brand_no as brandNo,b.brand_cname as brandCname,a.division_no as
+		divisionNo,c.division_name as divisionName
+	</sql>
+	<!--添加查询条件 -->
+	<sql id="condition">
+		<if test="null!=params">
+			<if test="null!=params.queryCondition and ''!=params.queryCondition">
+				${params.queryCondition}
+			</if>
+			<if test="null!=params.brandNo and ''!=params.brandNo">
+				and brand_no like concat('%',#{params.brandNo},'%')
+			</if>
+			<if test="null!=params.divisionNo and ''!=params.divisionNo">
+				and division_no like concat('%',#{params.divisionNo},'%')
+			</if>
+			<if test="null!=params.companyNo and ''!=params.companyNo">
+				and company_no like concat('%',#{params.companyNo},'%')
+			</if>
+		</if>
+	</sql>
+
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_brand_relation
+		WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) as s FROM bas_brand_relation WHERE 1=1
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_brand_relation WHERE 1=1
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField">
+			ORDER BY ${orderByField}
+			<if test="orderByField">
+				${orderBy}
+			</if>
+		</if>
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap"
+		parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_brand_relation WHERE 1=1
+		<include refid="condition" />
+	</select>
+
+	<!-- vo查询SQL-BEGIN -->
+	<select id="SelectListByVoBasBrandRelation" resultMap="BasBrandRelationMap" parameterType="map">
+		<include refid="BasBrandRelationVoSelectPart"/>
+	</select>
+	
+	<sql id="BasBrandRelationVoSelectPart">
+		select
+		<include refid="BasBrandRelationMap_Column_List" />
+		from bas_brand_relation a,bas_brand b ,bas_division c
+		where a.brand_no=b.brand_no and a.division_no=c.division_no
+		<if test="null!=brandNo and ''!=brandNo">
+			and a.brand_no =#{brandNo}
+		</if>
+		<if test="null!=brandCname and ''!=brandCname">
+			and b.brand_cname like concat('%',#{brandCname},'%')
+		</if>
+	</sql>
+	
+	<select id="brdRltnSelectListByVoAll" resultMap="BasBrandRelationMap" parameterType="map">
+		<include refid="BasBrandRelationVoSelectPart"/>
+	</select>
+	<!-- vo查询SQL-END -->
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		DELETE FROM bas_brand_relation
+		WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasBrandRelation">
+		DELETE FROM bas_brand_relation
+		WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasBrandRelation">
+		INSERT INTO bas_brand_relation (brand_no, division_no, company_no,
+		order_no, creator, create_time,
+		modifier, modify_time, remarks
+		)
+		VALUES (#{brandNo,jdbcType=VARCHAR}, #{divisionNo,jdbcType=VARCHAR},
+		#{companyNo,jdbcType=VARCHAR},
+		#{orderNo,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+		#{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+		#{remarks,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasBrandRelation">
+		INSERT INTO bas_brand_relation
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="brandNo != null">
+				brand_no,
+			</if>
+			<if test="divisionNo != null">
+				division_no,
+			</if>
+			<if test="companyNo != null">
+				company_no,
+			</if>
+			<if test="orderNo != null">
+				order_no,
+			</if>
+			<if test="creator != null">
+				creator,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifier != null">
+				modifier,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="brandNo != null">
+				#{brandNo,jdbcType=VARCHAR},
+			</if>
+			<if test="divisionNo != null">
+				#{divisionNo,jdbcType=VARCHAR},
+			</if>
+			<if test="companyNo != null">
+				#{companyNo,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				#{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null">
+				#{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				#{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasBrandRelation">
+		UPDATE bas_brand_relation
+		<set>
+			<if test="divisionNo != null">
+				division_no = #{divisionNo,jdbcType=VARCHAR},
+			</if>
+			<if test="companyNo != null">
+				company_no = #{companyNo,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				order_no = #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null">
+				creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+		WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasBrandRelation">
+		UPDATE bas_brand_relation
+		SET division_no = #{divisionNo,jdbcType=VARCHAR},
+		company_no = #{companyNo,jdbcType=VARCHAR},
+		order_no = #{orderNo,jdbcType=INTEGER},
+		creator = #{creator,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modifier = #{modifier,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+		remarks = #{remarks,jdbcType=VARCHAR}
+		WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+	</update>
+</mapper>

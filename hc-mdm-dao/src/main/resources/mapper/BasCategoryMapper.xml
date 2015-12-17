@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasCategoryMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasCategory" >
+    <id column="category_no" property="categoryNo" jdbcType="VARCHAR" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+    <result column="special_code" property="specialCode" jdbcType="VARCHAR" />
+    <result column="parent_category_id" property="parentCategoryId" jdbcType="INTEGER" />
+    <result column="level_no" property="levelNo" jdbcType="INTEGER" />
+    <result column="search_code" property="searchCode" jdbcType="VARCHAR" />
+    <result column="affiliation" property="affiliation" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    category_no, category_id, category_name, special_code, parent_category_id, level_no, 
+    search_code, affiliation, order_no, enable_flag, creator, create_time, modifier, 
+    modify_time, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.parentCategoryId and ''!=params.parentCategoryId" >
+        and parent_Category_Id= #{params.parentCategoryId}
+      </if>
+      <if test="null!=params.CategoryNo and ''!=params.CategoryNo" >
+        and category_no= #{params.CategoryNo}
+      </if>
+      <if test="null!=params.CategoryName and ''!=params.CategoryName" >
+        and category_name= #{params.CategoryName}
+      </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_category
+    WHERE category_id = #{categoryId,jdbcType=INTEGER}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_category WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_category WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_category WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectInsertCategoryNo" resultType="java.lang.String"  parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+   	SELECT concat(
+    			case when length(coalesce(max(category_no),'00'))>2 then 
+          		substr(max(category_no),1,length(max(category_no))-2) else 
+          		(select category_no from bas_category where category_id=#{parentCategoryId,jdbcType=INTEGER}) end,
+    			right(concat('0',cast(right(coalesce(max(category_no),'00'),2) as signed integer)+1),2)
+    		) 
+	FROM bas_category 
+	WHERE parent_category_id=#{parentCategoryId,jdbcType=INTEGER}
+  </select>
+  <select id="selectSearchCode" resultType="java.lang.String"  parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+   	SELECT search_code
+	FROM bas_category 
+	WHERE category_id = #{categoryId,jdbcType=INTEGER}
+  </select>
+  <select id="getSubCategoryCount" resultType="java.lang.Integer"  parameterType="java.lang.String" >
+   	SELECT COUNT(1)
+	FROM bas_category 
+	WHERE parent_category_id IN
+	 (SELECT category_id FROM bas_category WHERE category_no=#{categoryNo,jdbcType=VARCHAR})
+  </select>
+  <select id="checkCategoryNo" resultType="java.lang.String"  parameterType="java.lang.String" >
+   	SELECT category_no
+	FROM bas_material 
+	WHERE category_no = #{categoryNo,jdbcType=VARCHAR} LIMIT 1
+  </select>
+  
+  <select id="getCategory" resultMap="BaseResultMap" parameterType="map">
+	SELECT category_id,category_no,category_name
+	FROM bas_category a 
+	<choose>
+    	<when test="1==params.type" >
+    		where a.parent_category_id>0 and not exists(select 1 from bas_category b where a.parent_category_id=b.category_id and b.parent_category_id>0)
+    	</when>
+    	<otherwise>
+    		where not exists(select 1 from bas_category b where b.parent_category_id=a.category_id)
+    	</otherwise>
+    </choose>
+     <include refid="condition" />
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_category
+    WHERE category_id = #{categoryId,jdbcType=INTEGER}
+  </delete>
+   <delete id="deleteBySearchCode" parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+	DELETE A FROM bas_category A,bas_category B
+	WHERE B.category_id = #{categoryId,jdbcType=INTEGER} AND A.search_code LIKE concat(B.search_code,'%')    
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+    DELETE FROM bas_category
+    WHERE category_id = #{categoryId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+    <!-- INSERT INTO bas_category (category_no, category_id, category_name, 
+      special_code, parent_category_id, level_no, 
+      search_code, affiliation, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+    VALUES (#{categoryNo,jdbcType=VARCHAR}, #{categoryId,jdbcType=INTEGER}, #{categoryName,jdbcType=VARCHAR}, 
+      #{specialCode,jdbcType=VARCHAR}, #{parentCategoryId,jdbcType=INTEGER}, #{levelNo,jdbcType=INTEGER}, 
+      #{searchCode,jdbcType=VARCHAR}, #{affiliation,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+      #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      ) -->
+    <!-- INSERT INTO bas_category (category_no,category_name, 
+      special_code, parent_category_id, level_no, 
+      search_code, affiliation, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+      SELECT
+		    (select concat(
+    			case when length(coalesce(max(category_no),'00'))>2 then 
+          		substr(max(category_no),1,length(max(category_no))-2) else 
+          		(select category_no from bas_category where category_id=#{parentCategoryId,jdbcType=INTEGER}) end,
+    			right(concat('0',cast(right(coalesce(max(category_no),'00'),2) as signed integer)+1),2)
+    		) 
+			from bas_category where parent_category_id=#{parentCategoryId,jdbcType=INTEGER}),
+		 #{categoryName,jdbcType=VARCHAR},
+		 #{specialCode,jdbcType=VARCHAR}, #{parentCategoryId,jdbcType=INTEGER}, #{levelNo,jdbcType=INTEGER}, 
+      	 #{searchCode,jdbcType=VARCHAR}, #{affiliation,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+     	 #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      	 #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR} -->
+ 	INSERT INTO bas_category (category_no,category_name, 
+      special_code, parent_category_id, level_no, 
+      search_code, affiliation, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+      SELECT
+		 #{categoryNo,jdbcType=VARCHAR},
+		 #{categoryName,jdbcType=VARCHAR},
+		 #{specialCode,jdbcType=VARCHAR}, #{parentCategoryId,jdbcType=INTEGER}, #{levelNo,jdbcType=INTEGER}, 
+      	 #{searchCode,jdbcType=VARCHAR}, #{affiliation,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+     	 #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      	 #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+ 	INSERT INTO bas_category (category_no,category_name, 
+      special_code, parent_category_id, level_no, 
+      search_code, affiliation, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+      SELECT
+		 #{categoryNo,jdbcType=VARCHAR},
+		 #{categoryName,jdbcType=VARCHAR},
+		 #{specialCode,jdbcType=VARCHAR}, #{parentCategoryId,jdbcType=INTEGER}, #{levelNo,jdbcType=INTEGER}, 
+      	 #{searchCode,jdbcType=VARCHAR}, #{affiliation,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+     	 #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      	 #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+    UPDATE bas_category
+    <set >
+      <if test="categoryName != null" >
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="specialCode != null" >
+        special_code = #{specialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCategoryId != null" >
+        parent_category_id = #{parentCategoryId,jdbcType=INTEGER},
+      </if>
+      <if test="levelNo != null" >
+        level_no = #{levelNo,jdbcType=INTEGER},
+      </if>
+      <if test="searchCode != null" >
+        search_code = #{searchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliation != null" >
+        affiliation = #{affiliation,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE category_id = #{categoryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+    UPDATE bas_category
+    SET category_name = #{categoryName,jdbcType=VARCHAR},
+      special_code = #{specialCode,jdbcType=VARCHAR},
+      parent_category_id = #{parentCategoryId,jdbcType=INTEGER},
+      level_no = #{levelNo,jdbcType=INTEGER},
+      search_code = #{searchCode,jdbcType=VARCHAR},
+      affiliation = #{affiliation,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE category_id = #{categoryId,jdbcType=INTEGER}
+  </update>
+  <update id="updateSearchCode" parameterType="com.hc.scm.mdm.dao.entity.BasCategory" >
+    UPDATE bas_category a,bas_category b 
+    SET a.search_code = concat(case when coalesce(b.search_code,'')='' then '' else concat(b.search_code,',') end,a.category_id)
+    WHERE a.category_no = #{categoryNo,jdbcType=VARCHAR}  and b.category_id=a.parent_category_id
+  </update>
+</mapper>

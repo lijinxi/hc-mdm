@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BillMaterialDtlMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BillMaterialDtl" >
+    <id column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+    <result column="barcode_ean" property="barcodeEan" jdbcType="VARCHAR" />
+    <result column="material_name" property="materialName" jdbcType="VARCHAR" />
+    <result column="specifications" property="specifications" jdbcType="VARCHAR" />
+    <result column="old_code" property="oldCode" jdbcType="VARCHAR" />
+    <result column="inventory_category" property="inventoryCategory" jdbcType="VARCHAR" />
+    <result column="material_source" property="materialSource" jdbcType="VARCHAR" />
+    <result column="tax_rate_no" property="taxRateNo" jdbcType="VARCHAR" />
+    <result column="tax_category" property="taxCategory" jdbcType="VARCHAR" />
+    <result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="allow_sale" property="allowSale" jdbcType="TINYINT" />
+    <result column="allow_delegate" property="allowDelegate" jdbcType="TINYINT" />
+    <result column="allow_purchase" property="allowPurchase" jdbcType="TINYINT" />
+    <result column="allow_produce" property="allowProduce" jdbcType="TINYINT" />
+    <result column="material_status" property="materialStatus" jdbcType="TINYINT" />
+    <result column="enable_flag" property="enableFlag" jdbcType="TINYINT" />
+    <result column="code_rule_no" property="codeRuleNo" jdbcType="VARCHAR" />
+    <result column="advice_price" property="advicePrice" jdbcType="VARCHAR" />
+    <result column="currency_no" property="currencyNo" jdbcType="VARCHAR" />
+    <result column="season_no" property="seasonNo" jdbcType="VARCHAR" />
+    <result column="parent_category_no" property="parentCategoryNo" jdbcType="VARCHAR" />
+    <result column="category_no" property="categoryNo" jdbcType="VARCHAR" />
+    <result column="model_no" property="modelNo" jdbcType="VARCHAR" />
+    <result column="style_no" property="styleNo" jdbcType="VARCHAR" />
+    <result column="product_code" property="productCode" jdbcType="VARCHAR" />
+    <result column="manufacturer" property="manufacturer" jdbcType="VARCHAR" />
+    <result column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+    <result column="special_code" property="specialCode" jdbcType="VARCHAR" />
+    <result column="development_times" property="developmentTimes" jdbcType="TINYINT" />
+    <result column="lining" property="lining" jdbcType="VARCHAR" />
+    <result column="insoles" property="insoles" jdbcType="VARCHAR" />
+    <result column="outer_bottom" property="outerBottom" jdbcType="VARCHAR" />
+    <result column="style" property="style" jdbcType="VARCHAR" />
+    <result column="sales_channels" property="salesChannels" jdbcType="TINYINT" />
+    <result column="vamp_material" property="vampMaterial" jdbcType="VARCHAR" />
+    <result column="color_no" property="colorNo" jdbcType="VARCHAR" />
+    <result column="gender_type" property="genderType" jdbcType="VARCHAR" />
+    <result column="series" property="series" jdbcType="VARCHAR" />
+    <result column="join_order_metting" property="joinOrderMetting" jdbcType="TINYINT" />
+    <result column="textures" property="textures" jdbcType="VARCHAR" />
+    <result column="normal_unit" property="normalUnit" jdbcType="VARCHAR" />
+    
+    <result column="purchase_unit" property="purchaseUnit" jdbcType="VARCHAR" />
+    <result column="purchase_group" property="purchaseGroup" jdbcType="VARCHAR" />
+    <result column="supply_category_no" property="supplyCategoryNo" jdbcType="VARCHAR" />
+    
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="if_qc" property="ifQc" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BillMatMaxOrderNoResultMap" type="com.hc.scm.mdm.dao.model.BillMatMaxOrderNoModel" >
+	  <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+	  <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="BillMatSizeMaxOrderNoResultMap" type="com.hc.scm.mdm.dao.model.BillMatSizeMaxOrderNoModel" >
+	  <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+	  <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+	  <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+  </resultMap> 
+  
+  <resultMap id="BasStyleResultMap" type="com.hc.scm.mdm.dao.entity.BasStyle" >
+    <id column="style_id" property="styleId" jdbcType="INTEGER" />
+    <result column="model_no" property="modelNo" jdbcType="VARCHAR" />
+    <result column="style_no" property="styleNo" jdbcType="VARCHAR" />
+    <result column="style_name" property="styleName" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+  </resultMap> 
+  
+  <resultMap id="BasSizeResultMap" type="com.hc.scm.mdm.dao.entity.BasSize" >
+    <id column="size_no" property="sizeNo" jdbcType="VARCHAR" />
+    <result column="size_id" property="sizeId" jdbcType="INTEGER" />
+    <result column="size_code" property="sizeCode" jdbcType="VARCHAR" />
+    <result column="size_name" property="sizeName" jdbcType="VARCHAR" />
+    <result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <resultMap id="BaseCategoryResultMap" type="com.hc.scm.mdm.dao.entity.BasCategory" >
+    <id column="category_no" property="categoryNo" jdbcType="VARCHAR" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="category_name" property="categoryName" jdbcType="VARCHAR" />
+    <result column="special_code" property="specialCode" jdbcType="VARCHAR" />
+    <result column="parent_category_id" property="parentCategoryId" jdbcType="INTEGER" />
+    <result column="level_no" property="levelNo" jdbcType="INTEGER" />
+    <result column="search_code" property="searchCode" jdbcType="VARCHAR" />
+    <result column="affiliation" property="affiliation" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>    
+  
+  
+  <sql id="Base_Column_List" >
+    line_id, bill_no, material_no, material_code, barcode_ean, material_name, specifications, 
+    old_code, inventory_category, material_source, tax_rate_no, tax_category, size_type_no, 
+    allow_sale, allow_delegate, allow_purchase, allow_produce, material_status, enable_flag, 
+    code_rule_no, advice_price, currency_no, season_no, parent_category_no, category_no, model_no, style_no, 
+    product_code, manufacturer, brand_no, special_code, development_times, lining, insoles, outer_bottom, style, sales_channels, 
+    vamp_material, color_no, gender_type, series, join_order_metting, textures, normal_unit,
+    purchase_unit, purchase_group, supply_category_no,
+    order_no, remarks,if_qc
+  </sql>
+  
+  <sql id="Base_Category_Column_List" >
+    category_no, category_id, category_name, special_code, parent_category_id, level_no, 
+    search_code, affiliation, order_no, enable_flag, creator, create_time, modifier, 
+    modify_time, remarks
+  </sql>
+    
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.billNo and ''!=params.billNo">
+        and bill_no = #{params.billNo}
+      </if>
+      <if test="null!=params.materialNo and ''!=params.materialNo">
+        and material_no = #{params.materialNo}
+      </if>      
+      <if test="null!=params.materialCode and ''!=params.materialCode">
+        and material_code = #{params.materialCode}
+      </if>
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+    </if>
+  </sql>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bill_material_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bill_material_dtl WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bill_material_dtl WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bill_material_dtl WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM bill_material_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BillMaterialDtl" >
+    DELETE FROM bill_material_dtl
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+    <if test="billNo != null and billNo !=''">
+      AND bill_no = #{billNo,jdbcType=VARCHAR}
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BillMaterialDtl" >
+    INSERT INTO bill_material_dtl (bill_no, material_no, 
+      material_code, barcode_ean, material_name, 
+      specifications, old_code, inventory_category, 
+      material_source, tax_rate_no, tax_category, 
+      size_type_no, allow_sale, allow_delegate, 
+      allow_purchase, allow_produce, material_status, 
+      enable_flag, code_rule_no, advice_price, 
+      currency_no, season_no, 
+      parent_category_no, category_no, 
+      model_no, style_no, product_code, 
+      manufacturer, brand_no, special_code, development_times, 
+      lining, insoles, outer_bottom,
+      style, sales_channels, 
+      vamp_material, color_no, gender_type, 
+      series, join_order_metting, textures, 
+      normal_unit,
+      purchase_unit, purchase_group, supply_category_no,
+      order_no, remarks,if_qc
+      )
+    VALUES (#{billNo,jdbcType=VARCHAR}, #{materialNo,jdbcType=VARCHAR}, 
+      #{materialCode,jdbcType=VARCHAR}, #{barcodeEan,jdbcType=VARCHAR}, #{materialName,jdbcType=VARCHAR}, 
+      #{specifications,jdbcType=VARCHAR}, #{oldCode,jdbcType=VARCHAR}, #{inventoryCategory,jdbcType=VARCHAR}, 
+      #{materialSource,jdbcType=VARCHAR}, #{taxRateNo,jdbcType=VARCHAR}, #{taxCategory,jdbcType=VARCHAR}, 
+      #{sizeTypeNo,jdbcType=VARCHAR}, #{allowSale,jdbcType=TINYINT}, #{allowDelegate,jdbcType=TINYINT}, 
+      #{allowPurchase,jdbcType=TINYINT}, #{allowProduce,jdbcType=TINYINT}, #{materialStatus,jdbcType=TINYINT}, 
+      #{enableFlag,jdbcType=TINYINT}, #{codeRuleNo,jdbcType=VARCHAR}, #{advicePrice,jdbcType=VARCHAR}, 
+      #{currencyNo,jdbcType=VARCHAR}, #{seasonNo,jdbcType=VARCHAR},
+      #{parentCategoryNo,jdbcType=VARCHAR}, #{categoryNo,jdbcType=VARCHAR}, 
+      #{modelNo,jdbcType=VARCHAR}, #{styleNo,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR}, 
+      #{manufacturer,jdbcType=VARCHAR}, #{brandNo,jdbcType=VARCHAR},#{specialCode,jdbcType=VARCHAR},
+      #{developmentTimes,jdbcType=TINYINT}, 
+      #{lining,jdbcType=VARCHAR}, #{insoles,jdbcType=VARCHAR}, #{outerBottom,jdbcType=VARCHAR},
+      #{style,jdbcType=VARCHAR}, #{salesChannels,jdbcType=TINYINT}, 
+      #{vampMaterial,jdbcType=VARCHAR}, #{colorNo,jdbcType=VARCHAR}, #{genderType,jdbcType=VARCHAR}, 
+      #{series,jdbcType=VARCHAR}, #{joinOrderMetting,jdbcType=TINYINT}, #{textures,jdbcType=VARCHAR}, 
+      #{normalUnit,jdbcType=VARCHAR},
+      #{purchaseUnit,jdbcType=VARCHAR},#{purchaseGroup,jdbcType=VARCHAR},#{supplyCategoryNo,jdbcType=VARCHAR},
+      #{orderNo,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR},
+      #{ifQc,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BillMaterialDtl" >
+    INSERT INTO bill_material_dtl
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="billNo != null" >
+        bill_no,
+      </if>
+      <if test="materialNo != null" >
+        material_no,
+      </if>
+      <if test="materialCode != null" >
+        material_code,
+      </if>
+      <if test="barcodeEan != null" >
+        barcode_ean,
+      </if>
+      <if test="materialName != null" >
+        material_name,
+      </if>
+      <if test="specifications != null" >
+        specifications,
+      </if>
+      <if test="oldCode != null" >
+        old_code,
+      </if>
+      <if test="inventoryCategory != null" >
+        inventory_category,
+      </if>
+      <if test="materialSource != null" >
+        material_source,
+      </if>
+      <if test="taxRateNo != null" >
+        tax_rate_no,
+      </if>
+      <if test="taxCategory != null" >
+        tax_category,
+      </if>
+      <if test="sizeTypeNo != null" >
+        size_type_no,
+      </if>
+      <if test="allowSale != null" >
+        allow_sale,
+      </if>
+      <if test="allowDelegate != null" >
+        allow_delegate,
+      </if>
+      <if test="allowPurchase != null" >
+        allow_purchase,
+      </if>
+      <if test="allowProduce != null" >
+        allow_produce,
+      </if>
+      <if test="materialStatus != null" >
+        material_status,
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag,
+      </if>
+      <if test="codeRuleNo != null" >
+        code_rule_no,
+      </if>
+      <if test="advicePrice != null" >
+        advice_price,
+      </if>
+      <if test="currencyNo != null" >
+        currency_no,
+      </if>
+      <if test="seasonNo != null" >
+        season_no,
+      </if>
+      <if test="parentCategoryNo != null" >
+        parent_category_no,
+      </if>      
+      <if test="categoryNo != null" >
+        category_no,
+      </if>
+      <if test="modelNo != null" >
+        model_no,
+      </if>
+      <if test="styleNo != null" >
+        style_no,
+      </if>
+      <if test="productCode != null" >
+        product_code,
+      </if>
+      <if test="manufacturer != null" >
+        manufacturer,
+      </if>
+      <if test="brandNo != null" >
+        brand_no,
+      </if>
+      <if test="specialCode != null" >
+        special_code,
+      </if>      
+      <if test="developmentTimes != null" >
+        development_times,
+      </if>
+      <if test="lining != null" >
+        lining,
+      </if>   
+      <if test="insoles != null" >
+        insoles,
+      </if>           
+      <if test="outerBottom != null" >
+        outer_bottom,
+      </if>
+      <if test="style != null" >
+        style,
+      </if>
+      <if test="salesChannels != null" >
+        sales_channels,
+      </if>
+      <if test="vampMaterial != null" >
+        vamp_material,
+      </if>
+      <if test="colorNo != null" >
+        color_no,
+      </if>
+      <if test="genderType != null" >
+        gender_type,
+      </if>
+      <if test="series != null" >
+        series,
+      </if>
+      <if test="joinOrderMetting != null" >
+        join_order_metting,
+      </if>
+      <if test="textures != null" >
+        textures,
+      </if>
+      <if test="normalUnit != null" >
+        normal_unit,
+      </if>
+      
+      <if test="purchaseUnit != null" >
+        purchase_unit,
+      </if>
+      <if test="purchaseGroup != null" >
+        purchase_group,
+      </if>
+      <if test="supplyCategoryNo != null" >
+        supply_category_no,
+      </if>                
+      
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="ifQc != null" >
+        if_qc,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="billNo != null" >
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNo != null" >
+        #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialCode != null" >
+        #{materialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="barcodeEan != null" >
+        #{barcodeEan,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null" >
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="specifications != null" >
+        #{specifications,jdbcType=VARCHAR},
+      </if>
+      <if test="oldCode != null" >
+        #{oldCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryCategory != null" >
+        #{inventoryCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="materialSource != null" >
+        #{materialSource,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRateNo != null" >
+        #{taxRateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="taxCategory != null" >
+        #{taxCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeTypeNo != null" >
+        #{sizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="allowSale != null" >
+        #{allowSale,jdbcType=TINYINT},
+      </if>
+      <if test="allowDelegate != null" >
+        #{allowDelegate,jdbcType=TINYINT},
+      </if>
+      <if test="allowPurchase != null" >
+        #{allowPurchase,jdbcType=TINYINT},
+      </if>
+      <if test="allowProduce != null" >
+        #{allowProduce,jdbcType=TINYINT},
+      </if>
+      <if test="materialStatus != null" >
+        #{materialStatus,jdbcType=TINYINT},
+      </if>
+      <if test="enableFlag != null" >
+        #{enableFlag,jdbcType=TINYINT},
+      </if>
+      <if test="codeRuleNo != null" >
+        #{codeRuleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="advicePrice != null" >
+        #{advicePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyNo != null" >
+        #{currencyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="seasonNo != null" >
+        #{seasonNo,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCategoryNo != null" >
+        #{parentCategoryNo,jdbcType=VARCHAR},
+      </if>      
+      <if test="categoryNo != null" >
+        #{categoryNo,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNo != null" >
+        #{modelNo,jdbcType=VARCHAR},
+      </if>
+      <if test="styleNo != null" >
+        #{styleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productCode != null" >
+        #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null" >
+        #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNo != null" >
+        #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="specialCode != null" >
+        #{specialCode,jdbcType=VARCHAR},
+      </if>      
+      <if test="developmentTimes != null" >
+        #{developmentTimes,jdbcType=TINYINT},
+      </if>
+      <if test="lining != null" >
+        #{lining,jdbcType=VARCHAR},
+      </if>     
+      <if test="insoles != null" >
+        #{insoles,jdbcType=VARCHAR},
+      </if>         
+      <if test="outerBottom != null" >
+        #{outerBottom,jdbcType=VARCHAR},
+      </if>
+      <if test="style != null" >
+        #{style,jdbcType=VARCHAR},
+      </if>
+      <if test="salesChannels != null" >
+        #{salesChannels,jdbcType=TINYINT},
+      </if>
+      <if test="vampMaterial != null" >
+        #{vampMaterial,jdbcType=VARCHAR},
+      </if>
+      <if test="colorNo != null" >
+        #{colorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="genderType != null" >
+        #{genderType,jdbcType=VARCHAR},
+      </if>
+      <if test="series != null" >
+        #{series,jdbcType=VARCHAR},
+      </if>
+      <if test="joinOrderMetting != null" >
+        #{joinOrderMetting,jdbcType=TINYINT},
+      </if>
+      <if test="textures != null" >
+        #{textures,jdbcType=VARCHAR},
+      </if>
+      <if test="normalUnit != null" >
+        #{normalUnit,jdbcType=VARCHAR},
+      </if>
+      
+      <if test="purchaseUnit != null" >
+        #{purchaseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroup != null" >
+        #{purchaseGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCategoryNo != null" >
+        #{supplyCategoryNo,jdbcType=VARCHAR},
+      </if>         
+      
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ifQc != null" >
+        #{ifQc,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BillMaterialDtl" >
+    UPDATE bill_material_dtl
+    <set >
+      <if test="billNo != null" >
+        bill_no = #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNo != null" >
+        material_no = #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialCode != null" >
+        material_code = #{materialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="barcodeEan != null" >
+        barcode_ean = #{barcodeEan,jdbcType=VARCHAR},
+      </if>
+      <if test="materialName != null" >
+        material_name = #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="specifications != null" >
+        specifications = #{specifications,jdbcType=VARCHAR},
+      </if>
+      <if test="oldCode != null" >
+        old_code = #{oldCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryCategory != null" >
+        inventory_category = #{inventoryCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="materialSource != null" >
+        material_source = #{materialSource,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRateNo != null" >
+        tax_rate_no = #{taxRateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="taxCategory != null" >
+        tax_category = #{taxCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeTypeNo != null" >
+        size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="allowSale != null" >
+        allow_sale = #{allowSale,jdbcType=TINYINT},
+      </if>
+      <if test="allowDelegate != null" >
+        allow_delegate = #{allowDelegate,jdbcType=TINYINT},
+      </if>
+      <if test="allowPurchase != null" >
+        allow_purchase = #{allowPurchase,jdbcType=TINYINT},
+      </if>
+      <if test="allowProduce != null" >
+        allow_produce = #{allowProduce,jdbcType=TINYINT},
+      </if>
+      <if test="materialStatus != null" >
+        material_status = #{materialStatus,jdbcType=TINYINT},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=TINYINT},
+      </if>
+      <if test="codeRuleNo != null" >
+        code_rule_no = #{codeRuleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="advicePrice != null" >
+        advice_price = #{advicePrice,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyNo != null" >
+        currency_no = #{currencyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="seasonNo != null" >
+        season_no = #{seasonNo,jdbcType=VARCHAR},
+      </if>
+      <if test="parentCategoryNo != null" >
+        parent_category_no = #{parentCategoryNo,jdbcType=VARCHAR},
+      </if>      
+      <if test="categoryNo != null" >
+        category_no = #{categoryNo,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNo != null" >
+        model_no = #{modelNo,jdbcType=VARCHAR},
+      </if>
+      <if test="styleNo != null" >
+        style_no = #{styleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productCode != null" >
+        product_code = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturer != null" >
+        manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      </if>
+      <if test="brandNo != null" >
+        brand_no = #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="specialCode != null" >
+        special_code = #{specialCode,jdbcType=VARCHAR},
+      </if>      
+      <if test="developmentTimes != null" >
+        development_times = #{developmentTimes,jdbcType=TINYINT},
+      </if>
+      <if test="lining != null" >
+        lining = #{lining,jdbcType=VARCHAR},
+      </if>   
+      <if test="insoles != null" >
+        insoles = #{insoles,jdbcType=VARCHAR},
+      </if>           
+      <if test="outerBottom != null" >
+        outer_bottom = #{outerBottom,jdbcType=VARCHAR},
+      </if>
+      <if test="style != null" >
+        style = #{style,jdbcType=VARCHAR},
+      </if>
+      <if test="salesChannels != null" >
+        sales_channels = #{salesChannels,jdbcType=TINYINT},
+      </if>
+      <if test="vampMaterial != null" >
+        vamp_material = #{vampMaterial,jdbcType=VARCHAR},
+      </if>
+      <if test="colorNo != null" >
+        color_no = #{colorNo,jdbcType=VARCHAR},
+      </if>
+      <if test="genderType != null" >
+        gender_type = #{genderType,jdbcType=VARCHAR},
+      </if>
+      <if test="series != null" >
+        series = #{series,jdbcType=VARCHAR},
+      </if>
+      <if test="joinOrderMetting != null" >
+        join_order_metting = #{joinOrderMetting,jdbcType=TINYINT},
+      </if>
+      <if test="textures != null" >
+        textures = #{textures,jdbcType=VARCHAR},
+      </if>
+      <if test="normalUnit != null" >
+        normal_unit = #{normalUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseUnit != null" >
+        purchase_unit = #{purchaseUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroup != null" >
+        purchase_group = #{purchaseGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="supplyCategoryNo != null" >
+        supply_category_no = #{supplyCategoryNo,jdbcType=VARCHAR},
+      </if>          
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="ifQc != null" >
+        if_qc = #{ifQc,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BillMaterialDtl" >
+    UPDATE bill_material_dtl
+    SET bill_no = #{billNo,jdbcType=VARCHAR},
+      material_no = #{materialNo,jdbcType=VARCHAR},
+      material_code = #{materialCode,jdbcType=VARCHAR},
+      barcode_ean = #{barcodeEan,jdbcType=VARCHAR},
+      material_name = #{materialName,jdbcType=VARCHAR},
+      specifications = #{specifications,jdbcType=VARCHAR},
+      old_code = #{oldCode,jdbcType=VARCHAR},
+      inventory_category = #{inventoryCategory,jdbcType=VARCHAR},
+      material_source = #{materialSource,jdbcType=VARCHAR},
+      tax_rate_no = #{taxRateNo,jdbcType=VARCHAR},
+      tax_category = #{taxCategory,jdbcType=VARCHAR},
+      size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+      allow_sale = #{allowSale,jdbcType=TINYINT},
+      allow_delegate = #{allowDelegate,jdbcType=TINYINT},
+      allow_purchase = #{allowPurchase,jdbcType=TINYINT},
+      allow_produce = #{allowProduce,jdbcType=TINYINT},
+      material_status = #{materialStatus,jdbcType=TINYINT},
+      enable_flag = #{enableFlag,jdbcType=TINYINT},
+      code_rule_no = #{codeRuleNo,jdbcType=VARCHAR},
+      advice_price = #{advicePrice,jdbcType=VARCHAR},
+      currency_no = #{currencyNo,jdbcType=VARCHAR},
+      season_no = #{seasonNo,jdbcType=VARCHAR},
+      parent_category_no = #{parentCategoryNo,jdbcType=VARCHAR},
+      category_no = #{categoryNo,jdbcType=VARCHAR},
+      model_no = #{modelNo,jdbcType=VARCHAR},
+      style_no = #{styleNo,jdbcType=VARCHAR},
+      product_code = #{productCode,jdbcType=VARCHAR},
+      manufacturer = #{manufacturer,jdbcType=VARCHAR},
+      brand_no = #{brandNo,jdbcType=VARCHAR},
+      special_code = #{specialCode,jdbcType=VARCHAR},
+      development_times = #{developmentTimes,jdbcType=TINYINT},
+      lining = #{lining,jdbcType=VARCHAR},
+      insoles = #{insoles,jdbcType=VARCHAR},
+      outer_bottom = #{outerBottom,jdbcType=VARCHAR},
+      style = #{style,jdbcType=VARCHAR},
+      sales_channels = #{salesChannels,jdbcType=TINYINT},
+      vamp_material = #{vampMaterial,jdbcType=VARCHAR},
+      color_no = #{colorNo,jdbcType=VARCHAR},
+      gender_type = #{genderType,jdbcType=VARCHAR},
+      series = #{series,jdbcType=VARCHAR},
+      join_order_metting = #{joinOrderMetting,jdbcType=TINYINT},
+      textures = #{textures,jdbcType=VARCHAR},
+      normal_unit = #{normalUnit,jdbcType=VARCHAR},
+      purchase_unit = #{purchaseUnit,jdbcType=VARCHAR},
+      purchase_group = #{purchaseGroup,jdbcType=VARCHAR},
+      supply_category_no = #{supplyCategoryNo,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 验证 -->
+    <select id="SelectOneModelByVoBillMatMaxOrderNo" resultMap="BillMatMaxOrderNoResultMap"
+		parameterType="map">
+		select
+		bill_no,max(order_no) order_no
+		from bill_material_dtl a 
+		where 1=1 
+		<if test="null!=billNo and ''!=billNo" >
+        	and bill_no = #{billNo}       
+      	</if> 
+	</select>
+    <select id="SelectOneModelByVoBillMatSizeMaxOrderNo" resultMap="BillMatSizeMaxOrderNoResultMap"
+		parameterType="map">
+		select
+		bill_no,material_no,max(order_no) order_no
+		from bill_material_size a 
+		where 1=1 
+		<if test="null!=billNo and ''!=billNo" >
+        	and bill_no = #{billNo}       
+      	</if> 
+		<if test="null!=materialNo and ''!=materialNo" >
+        	and material_no = #{materialNo}       
+      	</if>       	
+	</select>	
+    <select id="SelectOneModelByVoBillMatFromStyle" resultMap="BasStyleResultMap"
+		parameterType="map">
+		select
+		model_no,style_no,style_name,order_no,enable_flag
+		from bas_style a 
+		where 1=1 AND enable_flag=1
+		<if test="null!=styleNo and ''!=styleNo" >
+        	and style_no = #{styleNo}       
+      	</if> 
+	</select>	
+    <select id="SelectOneModelByVoBillMatFromSize" resultMap="BasSizeResultMap"
+		parameterType="map">
+		select
+		size_no, size_id, size_code, size_name, size_type_no, order_no, enable_flag
+		from bas_size a 
+		where 1=1 AND enable_flag=1
+		<if test="null!=sizeNo and ''!=sizeNo" >
+        	and size_no = #{sizeNo}       
+      	</if> 
+		<if test="null!=sizeCode and ''!=sizeCode" >
+        	and size_code = #{sizeCode}       
+      	</if>  
+		<if test="null!=sizeName and ''!=sizeName" >
+        	and size_name = #{sizeName}       
+      	</if>        	     	
+	</select>
+	
+    <select id="getParentCategory" resultMap="BaseCategoryResultMap" parameterType="java.lang.Integer">
+	    	select
+			<include refid="Base_Category_Column_List" />
+			FROM bas_category A
+			WHERE EXISTS(SELECT 1 FROM bas_category B WHERE A.category_id=B.parent_category_id) AND enable_flag=1 
+			AND parent_category_id= (CASE WHEN #{parentCategoryId} IS NULL THEN parent_category_id ELSE #{parentCategoryId} END) 
+	</select>	
+	
+    <select id="getCategory" resultMap="BaseCategoryResultMap" parameterType="java.lang.String">
+			<!--
+			select
+			<include refid="Base_Category_Column_List" />
+			FROM bas_category A
+			WHERE NOT EXISTS(SELECT 1 FROM bas_category B WHERE A.category_id=B.parent_category_id) AND enable_flag=1
+			AND parent_category_id= (CASE WHEN #{parentCategoryNo} IS NULL THEN parent_category_id ELSE #{parentCategoryNo} END)
+			-->
+			select <include refid="Base_Category_Column_List" /> 
+            from bas_category  
+            where SUBSTR(category_no from 1 for 2)=#{categoryNo} 
+            and TL_Str(search_code,',') 
+            not in(select parent_category_id from bas_category where SUBSTR(category_no from 1 for 2)=#{categoryNo} )
+            
+    </select>
+  
+</mapper>

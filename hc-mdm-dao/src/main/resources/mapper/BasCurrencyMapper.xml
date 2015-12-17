@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasCurrencyMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasCurrency" >
+    <id column="currency_no" property="currencyNo" jdbcType="VARCHAR" />
+    <result column="currency_name" property="currencyName" jdbcType="VARCHAR" />
+    <result column="currency_symbol" property="currencySymbol" jdbcType="VARCHAR" />
+    <result column="is_symbol_display" property="isSymbolDisplay" jdbcType="INTEGER" />
+    <result column="fomart" property="fomart" jdbcType="VARCHAR" />
+    <result column="price_digits" property="priceDigits" jdbcType="INTEGER" />
+    <result column="value_digits" property="valueDigits" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    currency_no, currency_name, currency_symbol, is_symbol_display, fomart, price_digits, 
+    value_digits, enable_flag, order_no, creator, create_time, modifier, modify_time, 
+    remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.currencyNo and ''!=params.currencyNo" >
+        and currency_no = #{params.currencyNo}
+      </if>
+      <if test="null!=params.currencyName and ''!=params.currencyName" >
+        and currency_name like concat('%',#{params.currencyName},'%')
+      </if>
+      <if test="null!=params.creator and ''!=params.creator" >
+        and creator like concat('%',#{params.creator},'%')       
+      </if>
+	  <if test="null!=params.createFromTime and ''!=params.createFromTime" >
+        and create_time &gt;= #{params.createFromTime}        
+      </if>
+	  <if test="null!=params.createToTime and ''!=params.createToTime" >
+        and create_time &lt;= #{params.createToTime}        
+      </if>  
+      <if test="null!=params.enableFlag and ''!=params.enableFlag" >
+        and enable_flag like concat('%',#{params.enableFlag},'%')
+      </if>
+                
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_currency
+    WHERE currency_no = #{currencyNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_currency WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_currency WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_currency WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_currency
+    WHERE currency_no = #{currencyNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasCurrency" >
+    DELETE FROM bas_currency
+    WHERE currency_no = #{currencyNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasCurrency" >
+    INSERT INTO bas_currency (currency_no, currency_name, currency_symbol, 
+      is_symbol_display, fomart, price_digits, 
+      value_digits, enable_flag, order_no, 
+      creator, create_time, modifier, 
+      modify_time, remarks)
+    VALUES (#{currencyNo,jdbcType=VARCHAR}, #{currencyName,jdbcType=VARCHAR}, #{currencySymbol,jdbcType=VARCHAR}, 
+      #{isSymbolDisplay,jdbcType=INTEGER}, #{fomart,jdbcType=VARCHAR}, #{priceDigits,jdbcType=INTEGER}, 
+      #{valueDigits,jdbcType=INTEGER}, #{enableFlag,jdbcType=INTEGER}, #{orderNo,jdbcType=INTEGER}, 
+      #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, 
+      #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasCurrency" >
+    INSERT INTO bas_currency
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="currencyNo != null" >
+        currency_no,
+      </if>
+      <if test="currencyName != null" >
+        currency_name,
+      </if>
+      <if test="currencySymbol != null" >
+        currency_symbol,
+      </if>
+      <if test="isSymbolDisplay != null" >
+        is_symbol_display,
+      </if>
+      <if test="fomart != null" >
+        fomart,
+      </if>
+      <if test="priceDigits != null" >
+        price_digits,
+      </if>
+      <if test="valueDigits != null" >
+        value_digits,
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="currencyNo != null" >
+        #{currencyNo,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyName != null" >
+        #{currencyName,jdbcType=VARCHAR},
+      </if>
+      <if test="currencySymbol != null" >
+        #{currencySymbol,jdbcType=VARCHAR},
+      </if>
+      <if test="isSymbolDisplay != null" >
+        #{isSymbolDisplay,jdbcType=INTEGER},
+      </if>
+      <if test="fomart != null" >
+        #{fomart,jdbcType=VARCHAR},
+      </if>
+      <if test="priceDigits != null" >
+        #{priceDigits,jdbcType=INTEGER},
+      </if>
+      <if test="valueDigits != null" >
+        #{valueDigits,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasCurrency" >
+    UPDATE bas_currency
+    <set >
+      <if test="currencyName != null" >
+        currency_name = #{currencyName,jdbcType=VARCHAR},
+      </if>
+      <if test="currencySymbol != null" >
+        currency_symbol = #{currencySymbol,jdbcType=VARCHAR},
+      </if>
+      <if test="isSymbolDisplay != null" >
+        is_symbol_display = #{isSymbolDisplay,jdbcType=INTEGER},
+      </if>
+      <if test="fomart != null" >
+        fomart = #{fomart,jdbcType=VARCHAR},
+      </if>
+      <if test="priceDigits != null" >
+        price_digits = #{priceDigits,jdbcType=INTEGER},
+      </if>
+      <if test="valueDigits != null" >
+        value_digits = #{valueDigits,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE currency_no = #{currencyNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasCurrency" >
+    UPDATE bas_currency
+    SET currency_name = #{currencyName,jdbcType=VARCHAR},
+      currency_symbol = #{currencySymbol,jdbcType=VARCHAR},
+      is_symbol_display = #{isSymbolDisplay,jdbcType=INTEGER},
+      fomart = #{fomart,jdbcType=VARCHAR},
+      price_digits = #{priceDigits,jdbcType=INTEGER},
+      value_digits = #{valueDigits,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE currency_no = #{currencyNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

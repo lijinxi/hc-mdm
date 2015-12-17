@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BillBomListSizeMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BillBomListSize" >
+    <id column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="SMALLINT" />
+    <result column="old_size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="new_size_type_no" property="newSizeTypeNo" jdbcType="VARCHAR" />
+    <result column="old_size_no" property="sizeNo" jdbcType="VARCHAR" />
+    <result column="new_size_no" property="sizeValue" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    line_id, bill_no, order_no, old_size_type_no, new_size_type_no, old_size_no, new_size_no
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bill_bom_list_size
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bill_bom_list_size WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bill_bom_list_size WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bill_bom_list_size WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByBillNo" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BillBomListSize" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bill_bom_list_size
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+    ORDER BY order_no
+  </select>    
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM bill_bom_list_size
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BillBomListSize" >
+    DELETE FROM bill_bom_list_size
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR} and order_no = #{orderNo,jdbcType=SMALLINT}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BillBomListSize" >
+    INSERT INTO bill_bom_list_size (line_id, bill_no, order_no, 
+      old_size_type_no, new_size_type_no, old_size_no, 
+      new_size_no)
+    VALUES (#{lineId,jdbcType=BIGINT}, #{billNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=SMALLINT}, 
+      #{sizeTypeNo,jdbcType=VARCHAR}, #{newSizeTypeNo,jdbcType=VARCHAR}, #{sizeNo,jdbcType=VARCHAR}, 
+      #{sizeValue,jdbcType=VARCHAR}
+     <!--  (SELECT size_no FROM bas_size WHERE size_type_no= #{newSizeTypeNo,jdbcType=VARCHAR} AND size_code=#{sizeValue,jdbcType=VARCHAR}) -->
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BillBomListSize" >
+    INSERT INTO bill_bom_list_size
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        line_id,
+      </if>
+      <if test="billNo != null" >
+        bill_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="sizeTypeNo != null" >
+        old_size_type_no,
+      </if>
+      <if test="newSizeTypeNo != null" >
+        new_size_type_no,
+      </if>
+      <if test="sizeNo != null" >
+        old_size_no,
+      </if>
+      <if test="sizeValue != null" >
+        new_size_no,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="lineId != null" >
+        #{lineId,jdbcType=BIGINT},
+      </if>
+      <if test="billNo != null" >
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=SMALLINT},
+      </if>
+      <if test="sizeTypeNo != null" >
+        #{sizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="newSizeTypeNo != null" >
+        #{newSizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeNo != null" >
+        #{sizeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeValue != null " >
+      	#{sizeValue,jdbcType=VARCHAR}
+      	  <!-- <choose>
+    		<when test="convertToSizeNo==1" >
+    			(SELECT size_no FROM bas_size WHERE size_type_no= #{newSizeTypeNo,jdbcType=VARCHAR} AND size_code=#{sizeValue,jdbcType=VARCHAR})
+    		</when>
+    		<otherwise>
+    			#{sizeValue,jdbcType=VARCHAR}	
+    		</otherwise>
+    	  </choose> -->
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BillBomListSize" >
+    UPDATE bill_bom_list_size a,bas_size b
+    <set >
+      <if test="billNo != null" >
+        a.bill_no = #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        a.order_no = #{orderNo,jdbcType=SMALLINT},
+      </if>
+      <if test="sizeTypeNo != null" >
+        a.old_size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="newSizeTypeNo != null" >
+        a.new_size_type_no = #{newSizeTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeNo != null" >
+        a.old_size_no = #{sizeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeValue != null" >
+        a.new_size_no = b.size_no
+      </if>
+    </set>
+    WHERE a.line_id = #{lineId,jdbcType=BIGINT} AND b.size_type_no=#{newSizeTypeNo,jdbcType=VARCHAR} AND b.size_code=#{sizeValue,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BillBomListSize" >
+    UPDATE bill_bom_list_size a,bas_size b
+    SET a.bill_no = #{billNo,jdbcType=VARCHAR},
+      a.order_no = #{orderNo,jdbcType=SMALLINT},
+      a.old_size_type_no = #{sizeTypeNo,jdbcType=VARCHAR},
+      a.new_size_type_no = #{newSizeTypeNo,jdbcType=VARCHAR},
+      a.old_size_no = #{sizeNo,jdbcType=VARCHAR},
+      a.new_size_no = b.size_no
+    WHERE a.line_id = #{lineId,jdbcType=BIGINT} AND b.size_type_no=#{newSizeTypeNo,jdbcType=VARCHAR} AND b.size_code=#{sizeValue,jdbcType=VARCHAR}
+  </update>
+</mapper>

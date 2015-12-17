@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasMaterialSizeMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasMaterialSize" >
+    <id column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <id column="size_no" property="sizeNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="barcode" property="barcode" jdbcType="VARCHAR" />
+    <result column="size_name" property="sizeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    a.material_no, a.size_no, a.order_no, a.barcode,
+    b.size_name
+  </sql>
+  <sql id="condition" >
+     <if test="null!=params" >
+      <if test="null!=params.materialNo and ''!=params.materialNo">
+        and a.material_no = #{params.materialNo}
+      </if>
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+    </if>
+ </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BasMaterialSizeKey" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_material_size a
+    WHERE material_no = #{materialNo,jdbcType=VARCHAR}
+      AND size_no = #{sizeNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_material_size a WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_material_size a 
+     inner join bas_size b on a.size_no=b.size_no
+     WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_material_size a 
+     inner join bas_size b on a.size_no=b.size_no
+     WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasMaterialSizeKey" >
+    DELETE FROM bas_material_size
+    WHERE material_no = #{materialNo,jdbcType=VARCHAR}
+      AND size_no = #{sizeNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasMaterialSize" >
+    DELETE FROM bas_material_size
+    WHERE material_no = #{materialNo,jdbcType=VARCHAR}
+      AND size_no = #{sizeNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasMaterialSize" >
+    INSERT INTO bas_material_size (material_no, size_no, order_no, 
+      barcode)
+    VALUES (#{materialNo,jdbcType=VARCHAR}, #{sizeNo,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+      #{barcode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasMaterialSize" >
+    INSERT INTO bas_material_size
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="materialNo != null" >
+        material_no,
+      </if>
+      <if test="sizeNo != null" >
+        size_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="barcode != null" >
+        barcode,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="materialNo != null" >
+        #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeNo != null" >
+        #{sizeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="barcode != null" >
+        #{barcode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasMaterialSize" >
+    UPDATE bas_material_size
+    <set >
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="barcode != null" >
+        barcode = #{barcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE material_no = #{materialNo,jdbcType=VARCHAR}
+      AND size_no = #{sizeNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasMaterialSize" >
+    UPDATE bas_material_size
+    SET order_no = #{orderNo,jdbcType=INTEGER},
+      barcode = #{barcode,jdbcType=VARCHAR}
+    WHERE material_no = #{materialNo,jdbcType=VARCHAR}
+      AND size_no = #{sizeNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

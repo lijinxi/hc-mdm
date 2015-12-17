@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasOrgViewMapper">
+
+	<resultMap type="com.hc.scm.mdm.dao.model.BasOrgViewModel"
+		id="model">
+		<id column="child_no" property="no" jdbcType="VARCHAR" />
+		<result column="parent_no" property="parentNo" jdbcType="VARCHAR" />
+		<result column="child_name" property="name" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="BasOrgGridModelMap" type="com.hc.scm.mdm.dao.model.BasOrgGridModel">
+		<id column="org_no" property="orgNo" jdbcType="VARCHAR" />
+		<result column="org_name" property="orgName" jdbcType="VARCHAR" />
+		<result column="division_no" property="divisionNo" jdbcType="VARCHAR" />
+		<result column="factory_no" property="factoryNo" jdbcType="VARCHAR" />
+		<!-- <result column="org_type" property="orgType" jdbcType="VARCHAR" /> -->
+		<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+		<result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Workshop_Column_List">
+		workshop_no org_no,
+		workshop_name org_name,
+		division_no,
+		factory_no,
+		<!-- workshop_type org_type, -->
+		order_no,
+		enable_flag,
+		creator,
+		create_time,
+		modifier,
+		modify_time,
+		remarks
+	</sql>
+
+	<sql id="Store_Column_List">
+		store_no org_no,
+		store_name org_name,
+		division_no,
+		factory_no,
+		<!-- store_type org_type, -->
+		order_no,
+		enable_flag,
+		creator,
+		create_time,
+		modifier,
+		modify_time,
+		remarks
+	</sql>
+
+	<sql id="condition">
+		<if test="null!=params">
+			<if test="null!=params.queryCondition and ''!=params.queryCondition">
+				${params.queryCondition}
+			</if>
+		</if>
+	</sql>
+
+	<sql id="sortSql">
+		<if test="orderByField != null and ''!=orderByField">
+			ORDER BY ${orderByField}
+			<if test="orderByField">
+				${orderBy}
+			</if>
+		</if>
+	</sql>
+
+	<sql id="orgNoCondition">
+		<if test="params.Type3 != 2">
+			<if test="params.Type1 == 1">
+				and division_no = #{params.orgNo}
+			</if>
+			<if test="params.Type1 == 2">
+				and factory_no = #{params.orgNo}
+			</if>
+			<if test="params.Type1 == 3 or params.Type1 == 4">
+				and concat(division_no,factory_no) = #{params.orgNo}
+			</if>
+		</if>
+
+	</sql>
+
+	<sql id="storeSql">
+		SELECT
+		<include refid="Store_Column_List" />
+		FROM bas_store
+		WHERE 1=1
+		<include refid="orgNoCondition" />
+		<if test="params.Type3 == 2">
+			and store_no = #{params.orgNo}
+		</if>
+	</sql>
+
+	<sql id="workshopSql">
+		SELECT
+		<include refid="Workshop_Column_List" />
+		FROM bas_workshop
+		WHERE 1=1
+		<include refid="orgNoCondition" />
+		<if test="params.Type3 == 2">
+			and workshop_no = #{params.orgNo}
+		</if>
+	</sql>
+
+	<select id="selectByPage" resultMap="BasOrgGridModelMap"
+		parameterType="map">
+		<!-- 1:全部,2:车间,3:仓库 -->
+		<if
+			test="params.Type1 != null and params.Type1 != '' 
+			and params.Type2 != null and params.Type2 != '' 
+			and params.orgNo != null and params.orgNo != '' ">
+
+			<if test="params.Type2 == 1">
+				select *
+				from
+				(
+				<include refid="workshopSql" />
+				union
+				<include refid="storeSql" />
+				) as a
+				where 1=1
+				<include refid="condition" />
+				<include refid="sortSql" />
+			</if>
+
+			<if test="params.Type2 == 2">
+				<include refid="workshopSql" />
+				<include refid="condition" />
+				<include refid="sortSql" />
+			</if>
+
+			<if test="params.Type2 == 3">
+				<include refid="storeSql" />
+				<include refid="condition" />
+				<include refid="sortSql" />
+			</if>
+		</if>
+	</select>
+
+	<select id="selectDivision" resultMap="model">
+		SELECT
+		division_no AS
+		child_no,
+		0 AS parent_no,
+		division_name AS child_name
+		FROM
+		bas_division
+
+		UNION
+		SELECT
+		workshop_no AS child_no,
+		division_no AS parent_no,
+		workshop_name AS child_name
+		FROM
+		bas_workshop
+
+		UNION
+		SELECT
+		store_no AS child_no,
+		division_no AS parent_no,
+		store_name AS child_name
+		FROM
+		bas_store
+		ORDER BY parent_no,child_no
+	</select>
+
+	<select id="selectFactory" resultMap="model">
+		SELECT
+		factory_no AS
+		child_no,
+		0 AS parent_no,
+		factory_name AS child_name
+		FROM
+		bas_factory
+		UNION
+		SELECT
+		workshop_no AS child_no,
+		factory_no AS parent_no,
+		workshop_name AS child_name
+		FROM
+		bas_workshop
+
+		UNION
+		SELECT
+		store_no AS child_no,
+		factory_no AS parent_no,
+		store_name AS child_name
+		FROM
+		bas_store
+		ORDER BY
+		parent_no,child_no
+	</select>
+
+	<select id="selectDivFac" resultMap="model">
+		SELECT
+		division_no AS
+		child_no,
+		0 AS parent_no,
+		division_name AS child_name
+		FROM
+		bas_division
+		UNION
+		SELECT DISTINCT
+		concat(a.division_no,a.factory_no) AS child_no,
+		a.division_no AS parent_no,
+		b.factory_name AS
+		child_name
+		FROM
+		bas_workshop a
+		INNER JOIN bas_factory b ON a.factory_no =
+		b.factory_no
+		UNION
+		SELECT DISTINCT
+		concat(a.division_no,a.factory_no) AS child_no,
+		a.division_no AS parent_no,
+		b.factory_name AS
+		child_name
+		FROM
+		bas_store a
+		INNER JOIN bas_factory b ON a.factory_no =
+		b.factory_no
+		ORDER BY
+		parent_no,child_no
+	</select>
+
+	<select id="selectFacDiv" resultMap="model">
+		SELECT
+		factory_no AS
+		child_no,
+		0 AS parent_no,
+		factory_name AS child_name
+		FROM
+		bas_factory
+		UNION
+		SELECT DISTINCT
+		concat(a.division_no,a.factory_no)
+		AS child_no,
+		a.factory_no AS parent_no,
+		b.division_name AS
+		child_name
+		FROM
+		bas_workshop a
+		INNER JOIN bas_division b ON a.division_no
+		=
+		b.division_no
+		UNION
+		SELECT DISTINCT
+		concat(a.division_no,a.factory_no) AS
+		child_no,
+		a.factory_no AS parent_no,
+		b.division_name AS
+		child_name
+		FROM
+		bas_store a
+		INNER JOIN bas_division b ON a.division_no =
+		b.division_no
+		ORDER BY
+		parent_no,child_no
+	</select>
+	
+	<select id="selectStoreAndWorkshop" resultMap="model">
+		SELECT
+		workshop_no AS child_no,
+		concat(division_no,factory_no) AS parent_no,
+		workshop_name AS child_name
+		FROM
+		bas_workshop
+
+		UNION
+		
+		SELECT
+		store_no AS child_no,
+		concat(division_no,factory_no) AS parent_no,
+		store_name AS child_name
+		FROM
+		bas_store
+		ORDER BY parent_no,child_no
+	</select>
+
+</mapper>

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasBomMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasBom" >
+    <id column="bom_id" property="bomId" jdbcType="BIGINT" />
+    <result column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="bom_type" property="bomType" jdbcType="TINYINT" />
+    <result column="bom_purpose" property="bomPurpose" jdbcType="VARCHAR" />
+    <result column="version_no" property="versionNo" jdbcType="INTEGER" />
+    <result column="bom_status" property="bomStatus" jdbcType="TINYINT" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+    <result column="material_name" property="materialName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    a.bom_id, a.brand_no,a.material_no, a.bom_type, a.bom_purpose, a.version_no, a.bom_status, a.modifier, a.modify_time, 
+    a.remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.brandNo and ''!=params.brandNo " >
+        and a.brand_no= #{params.brandNo}
+      </if>      
+      <if test="null!=params.materialNo and ''!=params.materialNo" >
+        and a.material_no= #{params.materialNo}
+      </if>
+      <if test="null!=params.bomPurpose and ''!=params.bomPurpose" >
+        and a.bom_purpose= #{params.bomPurpose}
+      </if>
+      <if test="null!=params.bomStatus and ''!=params.bomStatus" >
+        and a.bom_status= #{params.bomStatus}
+      </if>    
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_bom a
+    WHERE bom_id = #{bomId,jdbcType=BIGINT}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_bom a INNER JOIN bas_material b on a.material_no=b.material_no WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     ,b.material_code,b.material_name
+     FROM bas_bom a
+     INNER JOIN bas_material b on a.material_no=b.material_no
+     WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     ,b.material_code,b.material_name
+     FROM bas_bom a
+     INNER JOIN bas_material b on a.material_no=b.material_no
+     WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="getEntityBom" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BasBom" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_bom a
+    WHERE brand_no = #{brandNo,jdbcType=VARCHAR} AND material_no = #{materialNo,jdbcType=VARCHAR} AND bom_purpose = #{bomPurpose,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM bas_bom
+    WHERE bom_id = #{bomId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasBom" >
+    DELETE FROM bas_bom
+    WHERE bom_id = #{bomId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="bomId" parameterType="com.hc.scm.mdm.dao.entity.BasBom" >
+    INSERT INTO bas_bom (brand_no,material_no, bom_type, 
+      bom_purpose, version_no, bom_status, 
+      modifier, modify_time, remarks
+      )
+    VALUES (#{brandNo,jdbcType=VARCHAR},#{materialNo,jdbcType=VARCHAR}, #{bomType,jdbcType=TINYINT}, 
+      #{bomPurpose,jdbcType=VARCHAR}, #{versionNo,jdbcType=INTEGER}, #{bomStatus,jdbcType=TINYINT}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="bomId" parameterType="com.hc.scm.mdm.dao.entity.BasBom" >
+    INSERT INTO bas_bom
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="brandNo != null" >
+        brand_no,
+      </if>      
+      <if test="materialNo != null" >
+        material_no,
+      </if>
+      <if test="bomType != null" >
+        bom_type,
+      </if>
+      <if test="bomPurpose != null" >
+        bom_purpose,
+      </if>
+      <if test="versionNo != null" >
+        version_no,
+      </if>
+      <if test="bomStatus != null" >
+        bom_status,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="brandNo != null" >
+        #{brandNo,jdbcType=VARCHAR},
+      </if>     
+      <if test="materialNo != null" >
+        #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bomType != null" >
+        #{bomType,jdbcType=TINYINT},
+      </if>
+      <if test="bomPurpose != null" >
+        #{bomPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="versionNo != null" >
+        #{versionNo,jdbcType=INTEGER},
+      </if>
+      <if test="bomStatus != null" >
+        #{bomStatus,jdbcType=TINYINT},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasBom" >
+    UPDATE bas_bom
+    <set >
+      <if test="brandNo != null" >
+        brand_no = #{brandNo,jdbcType=VARCHAR},
+      </if>    
+      <if test="materialNo != null" >
+        material_no = #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bomType != null" >
+        bom_type = #{bomType,jdbcType=TINYINT},
+      </if>
+      <if test="bomPurpose != null" >
+        bom_purpose = #{bomPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="versionNo != null" >
+        version_no = #{versionNo,jdbcType=INTEGER},
+      </if>
+      <if test="bomStatus != null" >
+        bom_status = #{bomStatus,jdbcType=TINYINT},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE bom_id = #{bomId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasBom" >
+    UPDATE bas_bom
+    SET material_no = #{materialNo,jdbcType=VARCHAR},
+      brand_no = #{brandNo,jdbcType=VARCHAR},
+      bom_type = #{bomType,jdbcType=TINYINT},
+      bom_purpose = #{bomPurpose,jdbcType=VARCHAR},
+      version_no = #{versionNo,jdbcType=INTEGER},
+      bom_status = #{bomStatus,jdbcType=TINYINT},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE bom_id = #{bomId,jdbcType=BIGINT}
+  </update>
+</mapper>

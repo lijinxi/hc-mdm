@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasFeeMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasFee" >
+    <id column="fee_no" property="feeNo" jdbcType="VARCHAR" />
+    <result column="fee_name" property="feeName" jdbcType="VARCHAR" />
+    <result column="tax_rate_no" property="taxRateNo" jdbcType="VARCHAR" />
+    <result column="fee_category" property="feeCategory" jdbcType="VARCHAR" />
+    <result column="subject_no" property="subjectNo" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    fee_no, fee_name, tax_rate_no, fee_category, subject_no, order_no, enable_flag, creator, 
+    create_time, modifier, modify_time, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+	  <if test="null!=params.feeNo and ''!=params.feeNo" >
+        and fee_no =#{params.feeNo}       
+      </if>       
+	  <if test="null!=params.feeName and ''!=params.feeName" >
+        and fee_name like concat('%',#{params.feeName},'%')       
+      </if>
+	  <if test="null!=params.creator and ''!=params.creator" >
+        and creator= #{params.creator}        
+      </if>
+	  <if test="null!=params.createTime and ''!=params.createTime" >
+        and create_time= #{params.createTime}        
+      </if>    
+	  <if test="null!=params.modifier and ''!=params.modifier" >
+        and modifier= #{params.modifier}        
+      </if>              
+      <if test="null!=params.modifyTime and ''!=params.modifyTime" >
+        and modify_time= #{params.modifyTime}        
+      </if>        
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_fee
+    WHERE fee_no = #{feeNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_fee WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_fee WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_fee WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_fee
+    WHERE fee_no = #{feeNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasFee" >
+    DELETE FROM bas_fee
+    WHERE fee_no = #{feeNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasFee" >
+    INSERT INTO bas_fee (fee_no, fee_name, tax_rate_no, 
+      fee_category, subject_no, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+    VALUES (#{feeNo,jdbcType=VARCHAR}, #{feeName,jdbcType=VARCHAR}, #{taxRateNo,jdbcType=VARCHAR}, 
+      #{feeCategory,jdbcType=VARCHAR}, #{subjectNo,jdbcType=INTEGER}, #{orderNo,jdbcType=INTEGER}, 
+      #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasFee" >
+    INSERT INTO bas_fee
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="feeNo != null" >
+        fee_no,
+      </if>
+      <if test="feeName != null" >
+        fee_name,
+      </if>
+      <if test="taxRateNo != null" >
+        tax_rate_no,
+      </if>
+      <if test="feeCategory != null" >
+        fee_category,
+      </if>
+      <if test="subjectNo != null" >
+        subject_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="feeNo != null" >
+        #{feeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="feeName != null" >
+        #{feeName,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRateNo != null" >
+        #{taxRateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="feeCategory != null" >
+        #{feeCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectNo != null" >
+        #{subjectNo,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasFee" >
+    UPDATE bas_fee
+    <set >
+      <if test="feeName != null" >
+        fee_name = #{feeName,jdbcType=VARCHAR},
+      </if>
+      <if test="taxRateNo != null" >
+        tax_rate_no = #{taxRateNo,jdbcType=VARCHAR},
+      </if>
+      <if test="feeCategory != null" >
+        fee_category = #{feeCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="subjectNo != null" >
+        subject_no = #{subjectNo,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE fee_no = #{feeNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasFee" >
+    UPDATE bas_fee
+    SET fee_name = #{feeName,jdbcType=VARCHAR},
+      tax_rate_no = #{taxRateNo,jdbcType=VARCHAR},
+      fee_category = #{feeCategory,jdbcType=VARCHAR},
+      subject_no = #{subjectNo,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE fee_no = #{feeNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

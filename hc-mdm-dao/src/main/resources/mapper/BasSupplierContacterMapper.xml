@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasSupplierContacterMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasSupplierContacter" >
+    <id column="contacter_id" property="contacterId" jdbcType="INTEGER" />
+    <result column="supplier_no" property="supplierNo" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="contacter_called" property="contacterCalled" jdbcType="VARCHAR" />
+    <result column="contacter_name" property="contacterName" jdbcType="VARCHAR" />
+    <result column="contacter_dept" property="contacterDept" jdbcType="VARCHAR" />
+    <result column="contacter_duty" property="contacterDuty" jdbcType="VARCHAR" />
+    <result column="mobile_no" property="mobileNo" jdbcType="VARCHAR" />
+    <result column="phone_no" property="phoneNo" jdbcType="VARCHAR" />
+    <result column="fax_no" property="faxNo" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="is_default" property="isDefault" jdbcType="INTEGER" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    contacter_id, supplier_no, order_no, contacter_called, contacter_name, contacter_dept, 
+    contacter_duty, mobile_no, phone_no, fax_no, email, is_default, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.supplierNo and ''!=params.supplierNo">
+				and supplier_no = #{params.supplierNo}
+	  </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_supplier_contacter
+    WHERE contacter_id = #{contacterId,jdbcType=INTEGER}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_supplier_contacter WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_supplier_contacter WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_supplier_contacter WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="checkContanter" resultType="java.lang.Integer" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierContacter" >
+    SELECT 
+    COUNT(1)
+    FROM bas_supplier_contacter
+    WHERE supplier_no = #{supplierNo,jdbcType=VARCHAR} and isDefault=1
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    DELETE FROM bas_supplier_contacter
+    WHERE contacter_id = #{contacterId,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierContacter" >
+    DELETE FROM bas_supplier_contacter
+    WHERE contacter_id = #{contacterId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert"  useGeneratedKeys="true" keyProperty="contacterId" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierContacter" >
+    INSERT INTO bas_supplier_contacter (supplier_no, order_no, 
+      contacter_called, contacter_name, contacter_dept, 
+      contacter_duty, mobile_no, phone_no, 
+      fax_no, email, is_default, 
+      remarks)
+    SELECT #{supplierNo,jdbcType=VARCHAR},
+    (select max(order_no)+1 from bas_supplier_contacter where supplier_no=#{supplierNo,jdbcType=VARCHAR}), 
+      #{contacterCalled,jdbcType=VARCHAR}, #{contacterName,jdbcType=VARCHAR}, #{contacterDept,jdbcType=VARCHAR}, 
+      #{contacterDuty,jdbcType=VARCHAR}, #{mobileNo,jdbcType=VARCHAR}, #{phoneNo,jdbcType=VARCHAR}, 
+      #{faxNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER}, 
+      #{remarks,jdbcType=VARCHAR}
+  </insert>
+  <insert id="insertSelective"  useGeneratedKeys="true" keyProperty="contacterId" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierContacter" >
+    INSERT INTO bas_supplier_contacter
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="supplierNo != null" >
+        supplier_no,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="contacterCalled != null" >
+        contacter_called,
+      </if>
+      <if test="contacterName != null" >
+        contacter_name,
+      </if>
+      <if test="contacterDept != null" >
+        contacter_dept,
+      </if>
+      <if test="contacterDuty != null" >
+        contacter_duty,
+      </if>
+      <if test="mobileNo != null" >
+        mobile_no,
+      </if>
+      <if test="phoneNo != null" >
+        phone_no,
+      </if>
+      <if test="faxNo != null" >
+        fax_no,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="isDefault != null" >
+        is_default,
+      </if>
+      <if test="remarks != null" >
+        remarks
+      </if>
+    </trim>
+    SELECT 
+    <trim suffixOverrides="," >
+      <if test="supplierNo != null" >
+        #{supplierNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        (select max(order_no)+1 from bas_supplier_contacter where supplier_no=#{supplierNo,jdbcType=VARCHAR}),
+      </if>
+      <if test="contacterCalled != null" >
+        #{contacterCalled,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterName != null" >
+        #{contacterName,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterDept != null" >
+        #{contacterDept,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterDuty != null" >
+        #{contacterDuty,jdbcType=VARCHAR},
+      </if>
+      <if test="mobileNo != null" >
+        #{mobileNo,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNo != null" >
+        #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="faxNo != null" >
+        #{faxNo,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null" >
+        #{isDefault,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="modeifyIsDefault" parameterType="java.lang.String">
+  UPDATE bas_supplier_contacter SET is_default=0 WHERE supplier_no=#{supplierNo}
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierContacter" >
+    UPDATE bas_supplier_contacter
+    <set >
+      <if test="supplierNo != null" >
+        supplier_no = #{supplierNo,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="contacterCalled != null" >
+        contacter_called = #{contacterCalled,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterName != null" >
+        contacter_name = #{contacterName,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterDept != null" >
+        contacter_dept = #{contacterDept,jdbcType=VARCHAR},
+      </if>
+      <if test="contacterDuty != null" >
+        contacter_duty = #{contacterDuty,jdbcType=VARCHAR},
+      </if>
+      <if test="mobileNo != null" >
+        mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNo != null" >
+        phone_no = #{phoneNo,jdbcType=VARCHAR},
+      </if>
+      <if test="faxNo != null" >
+        fax_no = #{faxNo,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null" >
+        is_default = #{isDefault,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE contacter_id = #{contacterId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasSupplierContacter" >
+    UPDATE bas_supplier_contacter
+    SET supplier_no = #{supplierNo,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      contacter_called = #{contacterCalled,jdbcType=VARCHAR},
+      contacter_name = #{contacterName,jdbcType=VARCHAR},
+      contacter_dept = #{contacterDept,jdbcType=VARCHAR},
+      contacter_duty = #{contacterDuty,jdbcType=VARCHAR},
+      mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      phone_no = #{phoneNo,jdbcType=VARCHAR},
+      fax_no = #{faxNo,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      is_default = #{isDefault,jdbcType=INTEGER},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE contacter_id = #{contacterId,jdbcType=INTEGER}
+  </update>
+</mapper>

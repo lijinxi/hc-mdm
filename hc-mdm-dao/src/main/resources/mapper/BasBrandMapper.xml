@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasBrandMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasBrand" >
+    <id column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+    <result column="brand_id" property="brandId" jdbcType="INTEGER" />
+    <result column="brand_code" property="brandCode" jdbcType="VARCHAR" />
+    <result column="brand_ename" property="brandEname" jdbcType="VARCHAR" />
+    <result column="brand_cname" property="brandCname" jdbcType="VARCHAR" />
+    <result column="brand_category" property="brandCategory" jdbcType="VARCHAR" />
+    <result column="brand_upper_no" property="brandUpperNo" jdbcType="VARCHAR" />
+    <result column="special_code" property="specialCode" jdbcType="VARCHAR" />
+    <result column="affiliation" property="affiliation" jdbcType="VARCHAR" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    brand_no, brand_id, brand_code, brand_ename, brand_cname, brand_category, brand_upper_no, 
+    special_code, affiliation, order_no, enable_flag, creator, create_time, modifier, 
+    modify_time, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.brandNo and ''!=params.brandNo">
+			and brand_no like concat('%',#{params.brandNo},'%')  
+		</if>
+      <if test="null!=params.brandUpperNo and ''!=params.brandUpperNo">
+			and brand_upper_no like concat('%',#{params.brandUpperNo},'%')  
+	  </if>
+      <if test="null!=params.brandCname and ''!=params.brandCname">
+			and brand_cname like concat('%',#{params.brandCname},'%')  
+		</if>	
+	  <if test="null!=params.specialCode and ''!=params.specialCode">
+			and special_code like concat('%',#{params.specialCode},'%')  
+		</if>					
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_brand
+    WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_brand WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_brand WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_brand WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_brand
+    WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasBrand" >
+    DELETE FROM bas_brand
+    WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasBrand" >
+    INSERT INTO bas_brand (brand_no, brand_id, brand_code, 
+      brand_ename, brand_cname, brand_category, 
+      brand_upper_no, special_code, affiliation, 
+      order_no, enable_flag, creator, 
+      create_time, modifier, modify_time, 
+      remarks)
+    VALUES (#{brandNo,jdbcType=VARCHAR}, #{brandId,jdbcType=INTEGER}, #{brandCode,jdbcType=VARCHAR}, 
+      #{brandEname,jdbcType=VARCHAR}, #{brandCname,jdbcType=VARCHAR}, #{brandCategory,jdbcType=VARCHAR}, 
+      #{brandUpperNo,jdbcType=VARCHAR}, #{specialCode,jdbcType=VARCHAR}, #{affiliation,jdbcType=VARCHAR}, 
+      #{orderNo,jdbcType=INTEGER}, #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasBrand" >
+    INSERT INTO bas_brand
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="brandNo != null" >
+        brand_no,
+      </if>
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="brandCode != null" >
+        brand_code,
+      </if>
+      <if test="brandEname != null" >
+        brand_ename,
+      </if>
+      <if test="brandCname != null" >
+        brand_cname,
+      </if>
+      <if test="brandCategory != null" >
+        brand_category,
+      </if>
+      <if test="brandUpperNo != null" >
+        brand_upper_no,
+      </if>
+      <if test="specialCode != null" >
+        special_code,
+      </if>
+      <if test="affiliation != null" >
+        affiliation,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="brandNo != null" >
+        #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="brandCode != null" >
+        #{brandCode,jdbcType=VARCHAR},
+      </if>
+      <if test="brandEname != null" >
+        #{brandEname,jdbcType=VARCHAR},
+      </if>
+      <if test="brandCname != null" >
+        #{brandCname,jdbcType=VARCHAR},
+      </if>
+      <if test="brandCategory != null" >
+        #{brandCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="brandUpperNo != null" >
+        #{brandUpperNo,jdbcType=VARCHAR},
+      </if>
+      <if test="specialCode != null" >
+        #{specialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliation != null" >
+        #{affiliation,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasBrand" >
+    UPDATE bas_brand
+    <set >
+      <if test="brandId != null" >
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="brandCode != null" >
+        brand_code = #{brandCode,jdbcType=VARCHAR},
+      </if>
+      <if test="brandEname != null" >
+        brand_ename = #{brandEname,jdbcType=VARCHAR},
+      </if>
+      <if test="brandCname != null" >
+        brand_cname = #{brandCname,jdbcType=VARCHAR},
+      </if>
+      <if test="brandCategory != null" >
+        brand_category = #{brandCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="brandUpperNo != null" >
+        brand_upper_no = #{brandUpperNo,jdbcType=VARCHAR},
+      </if>
+      <if test="specialCode != null" >
+        special_code = #{specialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="affiliation != null" >
+        affiliation = #{affiliation,jdbcType=VARCHAR},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasBrand" >
+    UPDATE bas_brand
+    SET brand_id = #{brandId,jdbcType=INTEGER},
+      brand_code = #{brandCode,jdbcType=VARCHAR},
+      brand_ename = #{brandEname,jdbcType=VARCHAR},
+      brand_cname = #{brandCname,jdbcType=VARCHAR},
+      brand_category = #{brandCategory,jdbcType=VARCHAR},
+      brand_upper_no = #{brandUpperNo,jdbcType=VARCHAR},
+      special_code = #{specialCode,jdbcType=VARCHAR},
+      affiliation = #{affiliation,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE brand_no = #{brandNo,jdbcType=VARCHAR}
+  </update>
+  
+   	<!-- Vo查询的Mapper xml自动生成，请自行调试修改使用。-->
+  	<resultMap id="BasBrandModelMap" type="com.hc.scm.mdm.dao.model.BasBrandModel" >
+ 	 	<id column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+ 	 	<result column="brand_id" property="brandId" jdbcType="INTEGER" />
+ 	 	<result column="brand_code" property="brandCode" jdbcType="VARCHAR" />
+ 	 	<result column="brand_ename" property="brandEname" jdbcType="VARCHAR" />
+ 	 	<result column="brand_cname" property="brandCname" jdbcType="VARCHAR" />
+ 	 	<result column="brand_category" property="brandCategory" jdbcType="VARCHAR" />
+ 	 	<result column="brand_upper_no" property="brandUpperNo" jdbcType="VARCHAR" />
+ 	 	<result column="special_code" property="specialCode" jdbcType="VARCHAR" />
+ 	 	<result column="affiliation" property="affiliation" jdbcType="VARCHAR" />
+ 	 	<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+ 	 	<result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+ 	 	<result column="creator" property="creator" jdbcType="VARCHAR" />
+ 	 	<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+ 	 	<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+ 	 	<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+ 	 	<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+ 	</resultMap>
+
+ 	<sql id="baseSelectVoCondition" >
+ 	 	<if test="brandNo != null" >
+ 	 	 	and brand_no=#{brandNo}
+ 	 	</if>
+ 	 	<if test="brandId != null" >
+ 	 	 	and brand_id=#{brandId}
+ 	 	</if>
+ 	 	<if test="brandCode != null" >
+ 	 	 	and brand_code=#{brandCode}
+ 	 	</if>
+ 	 	<if test="brandEname != null" >
+ 	 	 	and brand_ename=#{brandEname}
+ 	 	</if>
+ 	 	<if test="brandCname != null" >
+ 	 	 	and brand_cname=#{brandCname}
+ 	 	</if>
+ 	 	<if test="brandCategory != null" >
+ 	 	 	and brand_category=#{brandCategory}
+ 	 	</if>
+ 	 	<if test="brandUpperNo != null" >
+ 	 	 	and brand_upper_no=#{brandUpperNo}
+ 	 	</if>
+ 	 	<if test="specialCode != null" >
+ 	 	 	and special_code=#{specialCode}
+ 	 	</if>
+ 	 	<if test="affiliation != null" >
+ 	 	 	and affiliation=#{affiliation}
+ 	 	</if>
+ 	 	<if test="orderNo != null" >
+ 	 	 	and order_no=#{orderNo}
+ 	 	</if>
+ 	 	<if test="enableFlag != null" >
+ 	 	 	and enable_flag=#{enableFlag}
+ 	 	</if>
+ 	 	<if test="creator != null" >
+ 	 	 	and creator=#{creator}
+ 	 	</if>
+ 	 	<if test="createTime != null" >
+ 	 	 	and create_time=#{createTime}
+ 	 	</if>
+ 	 	<if test="modifier != null" >
+ 	 	 	and modifier=#{modifier}
+ 	 	</if>
+ 	 	<if test="modifyTime != null" >
+ 	 	 	and modify_time=#{modifyTime}
+ 	 	</if>
+ 	 	<if test="remarks != null" >
+ 	 	 	and remarks=#{remarks}
+ 	 	</if>
+ 	</sql>
+
+ 	<select id="baseSelectListByVo" resultMap="BasBrandModelMap" parameterType="map">
+ 		 select <include refid="Base_Column_List" /> from bas_brand where 1=1
+ 		 <include refid="baseSelectVoCondition" />
+ 	</select>   
+
+ 	<select id="baseSelectOneModelByVo"  resultMap="BasBrandModelMap" parameterType="map">
+  		 select <include refid="Base_Column_List" /> from bas_brand where  1=1
+ 		 <include refid="baseSelectVoCondition" />
+ 	</select>
+
+</mapper>

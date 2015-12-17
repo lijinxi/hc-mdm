@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasCodeRuleMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasCodeRule" >
+    <id column="code_rule_no" property="codeRuleNo" jdbcType="VARCHAR" />
+    <result column="code_rule_name" property="codeRuleName" jdbcType="VARCHAR" />
+    <result column="code_rule_type" property="codeRuleType" jdbcType="INTEGER" />
+    <result column="allow_manual_edit" property="allowManualEdit" jdbcType="INTEGER" />
+    <result column="keep_continuous" property="keepContinuous" jdbcType="INTEGER" />
+    <result column="order_no" property="orderNo" jdbcType="INTEGER" />
+    <result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="modifier" property="modifier" jdbcType="VARCHAR" />
+    <result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    code_rule_no, code_rule_name, code_rule_type, allow_manual_edit, keep_continuous, 
+    order_no, enable_flag, creator, create_time, modifier, modify_time, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.codeRuleNo and ''!=params.codeRuleNo">
+        and code_rule_no = #{params.codeRuleNo}
+      </if>
+      <if test="null!=params.codeRuleName and ''!=params.codeRuleName">
+        and code_rule_name = #{params.codeRuleName}
+      </if>
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_code_rule
+    WHERE code_rule_no = #{codeRuleNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_code_rule WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_code_rule WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_code_rule WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_code_rule
+    WHERE code_rule_no = #{codeRuleNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasCodeRule" >
+    DELETE FROM bas_code_rule
+    WHERE code_rule_no = #{codeRuleNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasCodeRule" >
+    INSERT INTO bas_code_rule (code_rule_no, code_rule_name, code_rule_type, 
+      allow_manual_edit, keep_continuous, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+    VALUES (#{codeRuleNo,jdbcType=VARCHAR}, #{codeRuleName,jdbcType=VARCHAR}, #{codeRuleType,jdbcType=INTEGER}, 
+      #{allowManualEdit,jdbcType=INTEGER}, #{keepContinuous,jdbcType=INTEGER}, #{orderNo,jdbcType=INTEGER}, 
+      #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasCodeRule" >
+    INSERT INTO bas_code_rule
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="codeRuleNo != null" >
+        code_rule_no,
+      </if>
+      <if test="codeRuleName != null" >
+        code_rule_name,
+      </if>
+      <if test="codeRuleType != null" >
+        code_rule_type,
+      </if>
+      <if test="allowManualEdit != null" >
+        allow_manual_edit,
+      </if>
+      <if test="keepContinuous != null" >
+        keep_continuous,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="modifier != null" >
+        modifier,
+      </if>
+      <if test="modifyTime != null" >
+        modify_time,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="codeRuleNo != null" >
+        #{codeRuleNo,jdbcType=VARCHAR},
+      </if>
+      <if test="codeRuleName != null" >
+        #{codeRuleName,jdbcType=VARCHAR},
+      </if>
+      <if test="codeRuleType != null" >
+        #{codeRuleType,jdbcType=INTEGER},
+      </if>
+      <if test="allowManualEdit != null" >
+        #{allowManualEdit,jdbcType=INTEGER},
+      </if>
+      <if test="keepContinuous != null" >
+        #{keepContinuous,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasCodeRule" >
+    UPDATE bas_code_rule
+    <set >
+      <if test="codeRuleName != null" >
+        code_rule_name = #{codeRuleName,jdbcType=VARCHAR},
+      </if>
+      <if test="codeRuleType != null" >
+        code_rule_type = #{codeRuleType,jdbcType=INTEGER},
+      </if>
+      <if test="allowManualEdit != null" >
+        allow_manual_edit = #{allowManualEdit,jdbcType=INTEGER},
+      </if>
+      <if test="keepContinuous != null" >
+        keep_continuous = #{keepContinuous,jdbcType=INTEGER},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+      </if>
+      <if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+      </if>
+      <if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE code_rule_no = #{codeRuleNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasCodeRule" >
+    UPDATE bas_code_rule
+    SET code_rule_name = #{codeRuleName,jdbcType=VARCHAR},
+      code_rule_type = #{codeRuleType,jdbcType=INTEGER},
+      allow_manual_edit = #{allowManualEdit,jdbcType=INTEGER},
+      keep_continuous = #{keepContinuous,jdbcType=INTEGER},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE code_rule_no = #{codeRuleNo,jdbcType=VARCHAR}
+  </update>
+</mapper>

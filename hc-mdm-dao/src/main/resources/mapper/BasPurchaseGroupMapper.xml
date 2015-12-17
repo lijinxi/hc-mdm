@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasPurchaseGroupMapper" >
+	<resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasPurchaseGroup" >
+		<id column="purchase_group_no" property="purchaseGroupNo" jdbcType="VARCHAR" />
+		<result column="purchase_group_name" property="purchaseGroupName" jdbcType="VARCHAR" />
+		<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+		<result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+    purchase_group_no, purchase_group_name, order_no, enable_flag, creator, create_time, 
+    modifier, modify_time, remarks
+	</sql>
+	<sql id="condition" >
+		<if test="null!=params" >
+			<if test="null!=params.purchaseGroupNo and ''!=params.purchaseGroupNo">
+    		and purchase_group_no=#{params.purchaseGroupNo}
+			</if>
+			<if test="null!=params.purchaseGroupName and ''!=params.purchaseGroupName">
+    		and purchase_group_name=#{params.purchaseGroupName}
+			</if>
+			<if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        		${params.queryCondition}
+			</if>
+		</if>
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+		<include refid="Base_Column_List" />
+    FROM bas_purchase_group
+    WHERE purchase_group_no = #{purchaseGroupNo,jdbcType=VARCHAR}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_purchase_group WHERE 1=1 
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+		<include refid="Base_Column_List" />
+     FROM bas_purchase_group WHERE 1=1 
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+			<if test="orderByField" >
+        ${orderBy}
+			</if>
+		</if>
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+		<include refid="Base_Column_List" />
+     FROM bas_purchase_group WHERE 1=1 
+		<include refid="condition" />
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_purchase_group
+    WHERE purchase_group_no = #{purchaseGroupNo,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasPurchaseGroup" >
+    DELETE FROM bas_purchase_group
+    WHERE purchase_group_no = #{purchaseGroupNo,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasPurchaseGroup" >
+    INSERT INTO bas_purchase_group (purchase_group_no, purchase_group_name, 
+      order_no, enable_flag, creator, 
+      create_time, modifier, modify_time, 
+      remarks)
+    VALUES (#{purchaseGroupNo,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
+      #{orderNo,jdbcType=INTEGER}, #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, 
+      #{remarks,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasPurchaseGroup" >
+    INSERT INTO bas_purchase_group
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="purchaseGroupNo != null" >
+        purchase_group_no,
+			</if>
+			<if test="purchaseGroupName != null" >
+        purchase_group_name,
+			</if>
+			<if test="orderNo != null" >
+        order_no,
+			</if>
+			<if test="enableFlag != null" >
+        enable_flag,
+			</if>
+			<if test="creator != null" >
+        creator,
+			</if>
+			<if test="createTime != null" >
+        create_time,
+			</if>
+			<if test="modifier != null" >
+        modifier,
+			</if>
+			<if test="modifyTime != null" >
+        modify_time,
+			</if>
+			<if test="remarks != null" >
+        remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="purchaseGroupNo != null" >
+        #{purchaseGroupNo,jdbcType=VARCHAR},
+			</if>
+			<if test="purchaseGroupName != null" >
+        #{purchaseGroupName,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasPurchaseGroup" >
+    UPDATE bas_purchase_group
+		<set >
+			<if test="purchaseGroupName != null" >
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+    WHERE purchase_group_no = #{purchaseGroupNo,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasPurchaseGroup" >
+    UPDATE bas_purchase_group
+    SET purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE purchase_group_no = #{purchaseGroupNo,jdbcType=VARCHAR}
+	</update>
+</mapper>

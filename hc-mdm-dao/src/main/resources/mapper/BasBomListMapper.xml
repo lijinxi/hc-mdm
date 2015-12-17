@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasBomListMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasBomList" >
+    <id column="line_id" property="lineId" jdbcType="BIGINT" />
+    <result column="bom_id" property="bomId" jdbcType="BIGINT" />
+    <result column="order_no" property="orderNo" jdbcType="SMALLINT" />
+    <result column="brand_no" property="brandNo" jdbcType="VARCHAR" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="bom_purpose" property="bomPurpose" jdbcType="VARCHAR" />
+    <result column="dosage_numerator" property="dosageNumerator" jdbcType="DECIMAL" />
+    <result column="dosage_denominator" property="dosageDenominator" jdbcType="DECIMAL" />
+    <result column="pd_type_no" property="pdTypeNo" jdbcType="VARCHAR" />
+    <result column="store_no" property="storeNo" jdbcType="VARCHAR" />
+    <result column="is_virtual" property="isVirtual" jdbcType="TINYINT" />
+    <result column="parent_order_no" property="parentOrderNo" jdbcType="SMALLINT" />
+<!--     <result column="is_leaf" property="isLeaf" jdbcType="SMALLINT" />
+    <result column="leaf" property="leaf" jdbcType="VARCHAR" />   -->
+  </resultMap>
+  <sql id="Base_Column_List" >
+    line_id, bom_id, order_no, brand_no, material_no, bom_purpose, dosage_numerator, 
+    dosage_denominator, pd_type_no, store_no, is_virtual
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.brandNo and ''!=params.brandNo " >
+        and brand_no= #{params.brandNo}
+      </if>      
+      <if test="null!=params.materialNo and ''!=params.materialNo" >
+        and material_no= #{params.materialNo}
+      </if>
+      <if test="null!=params.bomPurpose and ''!=params.bomPurpose" >
+        and bom_purpose= #{params.bomPurpose}
+      </if>         
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bas_bom_list
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </select>
+  <select id="checkEntityBom" resultType="java.lang.String" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    SELECT cast(bom_status as char) as bom_status
+    FROM bas_bom
+    WHERE brand_no = #{brandNo,jdbcType=VARCHAR} AND material_no = #{materialNo,jdbcType=VARCHAR} AND bom_purpose = #{bomPurpose,jdbcType=VARCHAR}
+  </select>
+  <select id="getEntityBomList" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    SELECT 
+    <include refid="Base_Column_List" />,0 parent_order_no    
+    FROM bas_bom_list a
+    WHERE a.brand_no = #{brandNo,jdbcType=VARCHAR} AND a.material_no = #{materialNo,jdbcType=VARCHAR} AND a.bom_purpose = #{bomPurpose,jdbcType=VARCHAR}
+    AND EXISTS(
+     SELECT 1 FROM bas_bom b 
+     WHERE b.brand_no = #{brandNo,jdbcType=VARCHAR} AND b.material_no = #{materialNo,jdbcType=VARCHAR} AND b.bom_purpose = #{bomPurpose,jdbcType=VARCHAR}
+     			 AND a.brand_no=b.brand_no AND a.material_no=b.material_no AND a.bom_purpose=b.bom_purpose AND a.bom_id = b.bom_id
+    )
+  </select>
+  <select id="checkMaterial" resultType="java.lang.Integer" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    SELECT 
+    COUNT(1)
+    FROM bas_material
+    WHERE material_no = #{materialNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_bom_list a
+     WHERE EXISTS (SELECT 1 FROM bas_bom b WHERE a.bom_id=b.bom_id <include refid="condition" />) 
+     AND NOT EXISTS(SELECT 1 FROM bas_bom c WHERE 1=1 <include refid="condition" />
+     		AND a.bom_id=c.bom_id AND a.brand_no = c.brand_no AND a.material_no = c.material_no AND a.bom_purpose = c.bom_purpose
+     ) 
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    <!-- ,
+    <choose>
+    	<when test="null!=params.orderNo and ''!=params.orderNo " >
+    		#{params.materialNo} parent_order_no
+    	</when>
+    	<otherwise>
+    		0 parent_order_no
+    	</otherwise>
+    </choose> -->
+     FROM bas_bom_list a
+     WHERE EXISTS (SELECT 1 FROM bas_bom b WHERE a.bom_id=b.bom_id <include refid="condition" />) 
+     AND EXISTS(SELECT 1 FROM bas_bom c WHERE 1=1 <include refid="condition" />
+     		AND a.bom_id=c.bom_id AND a.brand_no = c.brand_no AND a.material_no = c.material_no AND a.bom_purpose = c.bom_purpose
+     ) 
+<!--     <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if> -->    
+    
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_bom_list WHERE 1=1 
+    <include refid="condition" />
+  </select>
+    <select id="findBomList" resultMap="BaseResultMap" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    <!-- SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_bom_list a
+     WHERE exists(SELECT 1 FROM bas_bom b WHERE a.bom_id=b.bom_id and 
+     	b.brand_no = #{brandNo,jdbcType=VARCHAR} and 
+     	b.material_no = #{materialNo,jdbcType=VARCHAR} and
+     	b.bom_purpose = #{bomPurpose,jdbcType=VARCHAR}
+     ) ORDER BY a.order_no -->
+     <!-- 由于不Mysql不支持With CTE这种写法 -->
+     <!-- WITH tmp_bom AS(
+     	SELECT bom_id,brand_no,material_no,bom_purpose
+     	FROM  bas_bom
+     	WHERE brand_no = #{brandNo,jdbcType=VARCHAR} and 
+     	material_no = #{materialNo,jdbcType=INTEGER} and
+     	bom_purpose = #{bomPurpose,jdbcType=VARCHAR}
+     )
+     SELECT 
+    <include refid="Base_Column_List" />
+     FROM bas_bom_list a
+     WHERE EXISTS(SELECT 1 FROM tmp_bom b WHERE a.bom_id=b.bom_id)
+     AND NOT EXISTS(SELECT 1 FROM tmp_bom c WHERE a.brand_no=c.brand_no and a.material_no=c.material_no and a.bom_purpose=c.bom_purpose)
+      -->
+    SELECT 
+    <include refid="Base_Column_List" />
+<!--     <if test="isLeaf==1">
+     ,#{isLeaf} as is_leaf,
+     (SELECT CASE WHEN COUNT(1)>1 THEN 'true' else 'false' end 
+     FROM bas_bom_list 
+     WHERE bom_id in (
+     		SELECT bom_id FROM bas_bom t 
+     		WHERE a.brand_no=t.brand_no and a.material_no=t.material_no and a.bom_purpose=t.bom_purpose
+     )) leaf
+    </if> -->
+     FROM bas_bom_list a
+     WHERE EXISTS(SELECT 1 FROM bas_bom b WHERE 
+     		b.brand_no = #{brandNo,jdbcType=VARCHAR} AND 
+     		b.material_no = #{materialNo,jdbcType=VARCHAR} AND
+     		b.bom_purpose = #{bomPurpose,jdbcType=VARCHAR} AND 
+     		a.bom_id=b.bom_id)
+     AND NOT EXISTS(SELECT 1 FROM bas_bom c WHERE 
+     		c.brand_no = #{brandNo,jdbcType=VARCHAR} AND 
+     		c.material_no = #{materialNo,jdbcType=VARCHAR} AND
+     		c.bom_purpose = #{bomPurpose,jdbcType=VARCHAR} AND 
+     		a.bom_id=c.bom_id AND a.brand_no = c.brand_no AND a.material_no = c.material_no AND a.bom_purpose = c.bom_purpose
+     )
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    DELETE FROM bas_bom_list
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    DELETE FROM bas_bom_list
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </delete>
+    <delete id="deleteBasBomListByBasBom" parameterType="com.hc.scm.mdm.dao.entity.BasBom" >
+    DELETE FROM bas_bom_list
+    WHERE bom_id = #{bomId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="lineId" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    INSERT INTO bas_bom_list (bom_id, order_no, 
+      brand_no,material_no, bom_purpose, 
+      dosage_numerator, dosage_denominator, pd_type_no, 
+      store_no, is_virtual)
+    VALUES (#{bomId,jdbcType=BIGINT}, #{orderNo,jdbcType=SMALLINT}, 
+      #{brandNo,jdbcType=VARCHAR}, #{materialNo,jdbcType=VARCHAR}, #{bomPurpose,jdbcType=VARCHAR}, 
+      #{dosageNumerator,jdbcType=DECIMAL}, #{dosageDenominator,jdbcType=DECIMAL}, #{pdTypeNo,jdbcType=VARCHAR}, 
+      #{storeNo,jdbcType=VARCHAR}, #{isVirtual,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="lineId" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    INSERT INTO bas_bom_list
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="bomId != null" >
+        bom_id,
+      </if>
+      <if test="orderNo != null" >
+        order_no,
+      </if>
+      <if test="brandNo != null" >
+        brand_no,
+      </if>
+      <if test="materialNo != null" >
+        material_no,
+      </if>
+      <if test="bomPurpose != null" >
+        bom_purpose,
+      </if>
+      <if test="dosageNumerator != null" >
+        dosage_numerator,
+      </if>
+      <if test="dosageDenominator != null" >
+        dosage_denominator,
+      </if>
+      <if test="pdTypeNo != null" >
+        pd_type_no,
+      </if>
+      <if test="storeNo != null" >
+        store_no,
+      </if>
+      <if test="isVirtual != null" >
+        is_virtual,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="bomId != null" >
+        #{bomId,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null" >
+        #{orderNo,jdbcType=SMALLINT},
+      </if>
+      <if test="brandNo != null" >
+        #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNo != null" >
+        #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bomPurpose != null" >
+        #{bomPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageNumerator != null" >
+        #{dosageNumerator,jdbcType=DECIMAL},
+      </if>
+      <if test="dosageDenominator != null" >
+        #{dosageDenominator,jdbcType=DECIMAL},
+      </if>
+      <if test="pdTypeNo != null" >
+        #{pdTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeNo != null" >
+        #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isVirtual != null" >
+        #{isVirtual,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    UPDATE bas_bom_list
+    <set >
+      <if test="bomId != null" >
+        bom_id = #{bomId,jdbcType=BIGINT},
+      </if>
+      <if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=SMALLINT},
+      </if>
+      <if test="brandNo != null" >
+        brand_no = #{brandNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materialNo != null" >
+        material_no = #{materialNo,jdbcType=VARCHAR},
+      </if>
+      <if test="bomPurpose != null" >
+        bom_purpose = #{bomPurpose,jdbcType=VARCHAR},
+      </if>
+      <if test="dosageNumerator != null" >
+        dosage_numerator = #{dosageNumerator,jdbcType=DECIMAL},
+      </if>
+      <if test="dosageDenominator != null" >
+        dosage_denominator = #{dosageDenominator,jdbcType=DECIMAL},
+      </if>
+      <if test="pdTypeNo != null" >
+        pd_type_no = #{pdTypeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="storeNo != null" >
+        store_no = #{storeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isVirtual != null" >
+        is_virtual = #{isVirtual,jdbcType=TINYINT},
+      </if>
+    </set>
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasBomList" >
+    UPDATE bas_bom_list
+    SET bom_id = #{bomId,jdbcType=BIGINT},
+      order_no = #{orderNo,jdbcType=SMALLINT},
+      brand_no = #{brandNo,jdbcType=VARCHAR},
+      material_no = #{materialNo,jdbcType=VARCHAR},
+      bom_purpose = #{bomPurpose,jdbcType=VARCHAR},
+      dosage_numerator = #{dosageNumerator,jdbcType=DECIMAL},
+      dosage_denominator = #{dosageDenominator,jdbcType=DECIMAL},
+      pd_type_no = #{pdTypeNo,jdbcType=VARCHAR},
+      store_no = #{storeNo,jdbcType=VARCHAR},
+      is_virtual = #{isVirtual,jdbcType=TINYINT}
+    WHERE line_id = #{lineId,jdbcType=BIGINT}
+  </update>
+  
+  <!-- 以下为替代表打横相关 -->  
+   <!-- 替代表打横ResultMap(为了适合基类特殊处理，通过别名处理同时newSizeTypeNo这个值通过前台设置进去) -->
+  <resultMap id="BasBomListSizeDataMap" type="com.hc.scm.mdm.dao.model.BasBomListSizeModel" extends="com.hc.scm.mdm.dao.mapper.BillBomListMapper.RowColWrapModelMap">
+    <result column="bom_id" property="bomId" jdbcType="BIGINT" />
+    <result column="order_no" property="orderNo" jdbcType="SMALLINT" />
+    <result column="old_size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="new_size_type_no" property="newSizeTypeNo" jdbcType="VARCHAR" />
+    <result column="old_size_no" property="sizeNo" jdbcType="VARCHAR" />
+    <result column="new_size_no" property="sizeValue" jdbcType="VARCHAR" />
+    <result column="material_no" property="materialNo" jdbcType="VARCHAR" />
+    <result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+    <result column="material_name" property="materialName" jdbcType="VARCHAR" />
+  </resultMap>
+    
+  <!-- 当前物料的父级码组的打横 -->
+  <select id="SelectListByVoBasBomListSizeHead" resultMap="com.hc.scm.mdm.dao.mapper.BillBomListMapper.BomListSizeHeadMap" parameterType="map">
+  	SELECT b.size_type_no as old_size_type_no,
+  				<include refid="com.hc.scm.mdm.dao.mapper.BillBomListMapper.Vo_MaxColumn_List" />
+	FROM bas_bom a
+	INNER JOIN bas_material c on a.material_no = c.material_no
+	INNER JOIN bas_size b on c.size_type_no=b.size_type_no
+	WHERE a.brand_no= #{brandNo} and a.material_no=#{materialNo} and a.bom_purpose=#{bomPurpose}
+  	GROUP BY b.size_type_no 
+  </select>
+  
+  <!-- 当前物料的打横数据 -->
+  <select id="SelectListByVoBasBomListSizeData" resultMap="BasBomListSizeDataMap" parameterType="map">
+    SELECT c.bom_id,c.order_no,c.old_size_type_no,c.new_size_type_no,f.material_no,f.material_code,f.material_name,
+  				<include refid="com.hc.scm.mdm.dao.mapper.BillBomListMapper.Vo_Dt_MaxColumn_List" />			
+	FROM bas_bom a
+  	INNER JOIN bas_bom_list d on a.bom_id = d.bom_id
+  	INNER JOIN bas_bom_list_size c on d.bom_id = c.bom_id and d.order_no = c.order_no
+	INNER JOIN  bas_size b on c.old_size_type_no = b.size_type_no and c.old_size_no=b.size_no
+ 	INNER JOIN bas_size e on c.new_size_type_no = e.size_type_no and c.new_size_no=e.size_no
+  	INNER JOIN bas_material f on d.material_no = f.material_no
+	WHERE a.brand_no=#{brandNo} and a.material_no=#{materialNo} and a.bom_purpose=#{bomPurpose}
+	GROUP BY c.bom_id,c.order_no,c.old_size_type_no,c.new_size_type_no,f.material_no,f.material_code,f.material_name
+  </select>     
+
+</mapper>

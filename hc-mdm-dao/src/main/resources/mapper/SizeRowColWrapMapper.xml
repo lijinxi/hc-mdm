@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.SizeRowColWrapMapper" >
+  <resultMap id="SizeRowColWrapMap" type="com.hc.scm.common.model.SizeRowColWrapModel" >
+  	<result column="size_type_no" property="sizeTypeNo" jdbcType="VARCHAR" />
+    <result column="f1" property="f1" jdbcType="VARCHAR" />
+    <result column="f2" property="f2" jdbcType="VARCHAR" />
+    <result column="f3" property="f3" jdbcType="VARCHAR" />
+    <result column="f4" property="f4" jdbcType="VARCHAR" />
+    <result column="f5" property="f5" jdbcType="VARCHAR" />
+    <result column="f6" property="f6" jdbcType="VARCHAR" />
+    <result column="f7" property="f7" jdbcType="VARCHAR" />
+    <result column="f8" property="f8" jdbcType="VARCHAR" />
+    <result column="f9" property="f9" jdbcType="VARCHAR" />
+    <result column="f10" property="f10" jdbcType="VARCHAR" />
+    <result column="f11" property="f11" jdbcType="VARCHAR" />
+    <result column="f12" property="f12" jdbcType="VARCHAR" />
+    <result column="f13" property="f13" jdbcType="VARCHAR" />
+    <result column="f14" property="f14" jdbcType="VARCHAR" />
+    <result column="f15" property="f15" jdbcType="VARCHAR" />
+    <result column="f16" property="f16" jdbcType="VARCHAR" />
+    <result column="f17" property="f17" jdbcType="VARCHAR" />
+    <result column="f18" property="f18" jdbcType="VARCHAR" />
+    <result column="f19" property="f19" jdbcType="VARCHAR" />
+    <result column="f20" property="f20" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="MaterialSizeRowColWrapMap" type="com.hc.scm.common.model.MaterialSizeRowColWrapModel"  extends="SizeRowColWrapMap">
+ 	<id column="material_no" property="materialNo" jdbcType="VARCHAR" />
+ 	<result column="material_code" property="materialCode" jdbcType="VARCHAR" />
+ 	<result column="material_name" property="materialName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BizMaterialSizeRowColWrapMap" type="com.hc.scm.common.model.MaterialSizeRowColWrapModel"  extends="MaterialSizeRowColWrapMap">
+ 	<collection property="sizeInfo" ofType="com.hc.scm.common.model.SizeInfoModel">
+ 		<result column="size_no" property="sizeNo" jdbcType="VARCHAR" />
+ 		<result column="size_name" property="sizeName" jdbcType="VARCHAR" />
+ 		<result column="size_qty" property="sizeQty" jdbcType="VARCHAR" />
+ 	</collection>
+  </resultMap>
+  
+ 	<sql id="SizeRowColWrapCondition">
+ 		<if test="null!=params">
+ 			<if test="null!=params.sizeTypeNo and ''!=params.sizeTypeNo">
+ 				and size_type_no in (${params.sizeTypeNo})
+ 			</if>
+ 			<if test="null!=params.materialNo and ''!=params.materialNo">
+ 				and size_type_no in (
+ 					select size_type_no from bas_material where material_no in (${params.materialNo})
+ 				)
+ 			</if>
+ 			<!-- 若采用#{params}形式多字符串的就必须使用如下sql 
+ 			<if test="null!=params.sizeTypeNos and ''!=params.sizeTypeNos">
+ 				and size_type_no in 
+	 			<foreach collection="params.sizeTypeNos" index="index" item="item" open="(" separator="," close=")">
+	 				#{item}
+	 			</foreach>
+ 			</if> -->
+ 		</if>
+ 	</sql>
+ 	
+ 	<select id="selectSizeRowColWrap" resultMap="SizeRowColWrapMap" parameterType="map">
+ 		select size_type_no,
+		    max(if(order_no='1',size_name,'0')) AS f1,
+		    max(if(order_no='2',size_name,'0')) AS f2,
+		    max(if(order_no='3',size_name,0)) AS f3,
+		    max(if(order_no='4',size_name,0)) AS f4,
+		    max(if(order_no='5',size_name,0)) AS f5,
+		    max(if(order_no='6',size_name,0)) AS f6,
+		    max(if(order_no='7',size_name,0)) AS f7,
+		    max(if(order_no='8',size_name,0)) AS f8,    
+		    max(if(order_no='9',size_name,0)) AS f9,
+		    max(if(order_no='10',size_name,0)) AS f10,
+		    max(if(order_no='11',size_name,0)) AS f11,
+		    max(if(order_no='12',size_name,0)) AS f12,
+		    max(if(order_no='13',size_name,0)) AS f13,
+		    max(if(order_no='14',size_name,0)) AS f14,
+		    max(if(order_no='15',size_name,0)) AS f15,
+		    max(if(order_no='16',size_name,0)) AS f16,     
+		    max(if(order_no='17',size_name,0)) AS f17,
+		    max(if(order_no='18',size_name,0)) AS f18,
+		    max(if(order_no='19',size_name,0)) AS f19,
+		    max(if(order_no='20',size_name,0)) AS f20
+		from bas_size
+		<where>
+			<include refid="SizeRowColWrapCondition"></include>
+		</where>
+		group by size_type_no
+ 	</select>
+
+ 	<select id="selectMaterialSizeRowColWrap" resultMap="MaterialSizeRowColWrapMap">
+ 		 select material_no,material_code,material_name,size_type_no,
+			    max(if(order_no='1',size_name,'0')) AS f1,
+			    max(if(order_no='2',size_name,'0')) AS f2,
+			    max(if(order_no='3',size_name,0)) AS f3,
+			    max(if(order_no='4',size_name,0)) AS f4,
+			    max(if(order_no='5',size_name,0)) AS f5,
+			    max(if(order_no='6',size_name,0)) AS f6,
+			    max(if(order_no='7',size_name,0)) AS f7,
+			    max(if(order_no='8',size_name,0)) AS f8,    
+			    max(if(order_no='9',size_name,0)) AS f9,
+			    max(if(order_no='10',size_name,0)) AS f10,
+			    max(if(order_no='11',size_name,0)) AS f11,
+			    max(if(order_no='12',size_name,0)) AS f12,
+			    max(if(order_no='13',size_name,0)) AS f13,
+			    max(if(order_no='14',size_name,0)) AS f14,
+			    max(if(order_no='15',size_name,0)) AS f15,
+			    max(if(order_no='16',size_name,0)) AS f16,     
+			    max(if(order_no='17',size_name,0)) AS f17,
+			    max(if(order_no='18',size_name,0)) AS f18,
+			    max(if(order_no='19',size_name,0)) AS f19,
+			    max(if(order_no='20',size_name,0)) AS f20
+		  from (
+		  select a.material_no,a.material_code,a.material_name,b.size_no,
+		  	c.size_name,c.order_no,c.size_type_no from bas_material a
+		  inner join bas_material_size b on a.material_no=b.material_no
+		  inner join bas_size c on b.size_no=c.size_no
+		  where  a.material_no in (${materialNo})
+		) tmp  group by tmp.material_no
+ 	</select>
+
+ 	<select id="selectMaterialSize" resultMap="BizMaterialSizeRowColWrapMap">
+		  select a.material_no, a.material_code, a.material_name,
+		  	a.size_type_no, b.size_no, c.size_name
+		  from bas_material a
+		  inner join bas_material_size b on a.material_no=b.material_no
+		  inner join bas_size c on b.size_no=c.size_no
+		  where  a.material_no in (${materialNo})
+ 	</select>
+  
+</mapper>

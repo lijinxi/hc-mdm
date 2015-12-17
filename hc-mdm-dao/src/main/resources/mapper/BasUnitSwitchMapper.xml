@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasUnitSwitchMapper" >
+	<resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasUnitSwitch" >
+		<id column="switch_id" property="switchId" jdbcType="VARCHAR" />
+		<result column="unit_no_a" property="unitNoA" jdbcType="VARCHAR" />
+		<result column="unit_no_b" property="unitNoB" jdbcType="VARCHAR" />
+		<result column="qty_a" property="qtyA" jdbcType="DECIMAL" />
+		<result column="qty_b" property="qtyB" jdbcType="DECIMAL" />
+		<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+		<result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+    switch_id, unit_no_a, unit_no_b, qty_a, qty_b, order_no, enable_flag, creator, create_time, 
+    modifier, modify_time, remarks
+	</sql>
+	<sql id="condition" >
+		<if test="null!=params" >
+			<if test="null!=params.unitNoA and ''!=params.unitNoA">
+				and unit_no_a = #{params.unitNoA}
+			</if>
+			<if test="null!=params.unitNoB and ''!=params.unitNoB">
+				and unit_no_b = #{params.unitNoB}
+			</if>
+			<if test="null!=params.createFromTime and ''!=params.createFromTime">
+			<![CDATA[
+				  and  DATE_FORMAT(create_time, '%Y-%m-%d') >=  DATE_FORMAT(#{params.createFromTime}, '%Y-%m-%d')
+			]]>
+			</if>
+			<if test="null!=params.createToTime and ''!=params.createToTime">
+			<![CDATA[
+				  and  DATE_FORMAT(create_time, '%Y-%m-%d') <=  DATE_FORMAT(#{params.createToTime}, '%Y-%m-%d')
+			]]>
+			</if>
+			<!--启用状态过滤-->
+			<if test="null!=params.enableFlag and ''!=params.enableFlag">
+    		and enable_flag =#{params.enableFlag}
+			</if>   
+			<if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+			</if>
+		</if>
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+		<include refid="Base_Column_List" />
+    FROM bas_unit_switch
+    WHERE switch_id = #{switchId,jdbcType=VARCHAR}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_unit_switch WHERE 1=1 
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+		<include refid="Base_Column_List" />
+     FROM bas_unit_switch WHERE 1=1 
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+			<if test="orderByField" >
+        ${orderBy}
+			</if>
+		</if>
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+		<include refid="Base_Column_List" />
+     FROM bas_unit_switch WHERE 1=1 
+		<include refid="condition" />
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_unit_switch
+    WHERE switch_id = #{switchId,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasUnitSwitch" >
+    DELETE FROM bas_unit_switch
+    WHERE switch_id = #{switchId,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasUnitSwitch" >
+    INSERT INTO bas_unit_switch (switch_id, unit_no_a, unit_no_b, 
+      qty_a, qty_b, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+    VALUES (#{switchId,jdbcType=VARCHAR}, #{unitNoA,jdbcType=VARCHAR}, #{unitNoB,jdbcType=VARCHAR}, 
+      #{qtyA,jdbcType=DECIMAL}, #{qtyB,jdbcType=DECIMAL}, #{orderNo,jdbcType=INTEGER}, 
+      #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasUnitSwitch" >
+    INSERT INTO bas_unit_switch
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="switchId != null" >
+        switch_id,
+			</if>
+			<if test="unitNoA != null" >
+        unit_no_a,
+			</if>
+			<if test="unitNoB != null" >
+        unit_no_b,
+			</if>
+			<if test="qtyA != null" >
+        qty_a,
+			</if>
+			<if test="qtyB != null" >
+        qty_b,
+			</if>
+			<if test="orderNo != null" >
+        order_no,
+			</if>
+			<if test="enableFlag != null" >
+        enable_flag,
+			</if>
+			<if test="creator != null" >
+        creator,
+			</if>
+			<if test="createTime != null" >
+        create_time,
+			</if>
+			<if test="modifier != null" >
+        modifier,
+			</if>
+			<if test="modifyTime != null" >
+        modify_time,
+			</if>
+			<if test="remarks != null" >
+        remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="switchId != null" >
+        #{switchId,jdbcType=VARCHAR},
+			</if>
+			<if test="unitNoA != null" >
+        #{unitNoA,jdbcType=VARCHAR},
+			</if>
+			<if test="unitNoB != null" >
+        #{unitNoB,jdbcType=VARCHAR},
+			</if>
+			<if test="qtyA != null" >
+        #{qtyA,jdbcType=DECIMAL},
+			</if>
+			<if test="qtyB != null" >
+        #{qtyB,jdbcType=DECIMAL},
+			</if>
+			<if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasUnitSwitch" >
+    UPDATE bas_unit_switch
+		<set >
+			<if test="unitNoA != null" >
+        unit_no_a = #{unitNoA,jdbcType=VARCHAR},
+			</if>
+			<if test="unitNoB != null" >
+        unit_no_b = #{unitNoB,jdbcType=VARCHAR},
+			</if>
+			<if test="qtyA != null" >
+        qty_a = #{qtyA,jdbcType=DECIMAL},
+			</if>
+			<if test="qtyB != null" >
+        qty_b = #{qtyB,jdbcType=DECIMAL},
+			</if>
+			<if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+    WHERE switch_id = #{switchId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasUnitSwitch" >
+    UPDATE bas_unit_switch
+    SET unit_no_a = #{unitNoA,jdbcType=VARCHAR},
+      unit_no_b = #{unitNoB,jdbcType=VARCHAR},
+      qty_a = #{qtyA,jdbcType=DECIMAL},
+      qty_b = #{qtyB,jdbcType=DECIMAL},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE switch_id = #{switchId,jdbcType=VARCHAR}
+	</update>
+</mapper>

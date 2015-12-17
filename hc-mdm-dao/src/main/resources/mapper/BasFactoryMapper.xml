@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasFactoryMapper" >
+	<resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasFactory" >
+		<id column="factory_no" property="factoryNo" jdbcType="VARCHAR" />
+		<result column="factory_name" property="factoryName" jdbcType="VARCHAR" />
+		<result column="contacter" property="contacter" jdbcType="VARCHAR" />
+		<result column="mobile_no" property="mobileNo" jdbcType="VARCHAR" />
+		<result column="fax_no" property="faxNo" jdbcType="VARCHAR" />
+		<result column="email" property="email" jdbcType="VARCHAR" />
+		<result column="post_code" property="postCode" jdbcType="VARCHAR" />
+		<result column="contact_address" property="contactAddress" jdbcType="VARCHAR" />
+		<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+		<result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+    factory_no, factory_name, contacter, mobile_no, fax_no, email, post_code, contact_address, 
+    order_no, enable_flag, creator, create_time, modifier, modify_time, remarks
+	</sql>
+	<sql id="condition" >
+		<if test="null!=params" >
+			<if test="null!=params.factoryNo and ''!=params.factoryNo">
+    		and factory_no = #{params.factoryNo} 
+			</if>
+			<if test="null!=params.factoryName and ''!=params.factoryName">
+    		and factory_name like concat('%',#{params.factoryName},'%') 
+			</if>
+			<!--启用状态过滤-->
+			<if test="null!=params.enableFlag and ''!=params.enableFlag">
+    		and enable_flag =#{params.enableFlag}
+			</if>   
+			<if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+			</if>
+		</if>
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+		<include refid="Base_Column_List" />
+    FROM bas_factory
+    WHERE factory_no = #{factoryNo,jdbcType=VARCHAR}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bas_factory WHERE 1=1 
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+		<include refid="Base_Column_List" />
+     FROM bas_factory WHERE 1=1 
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+			<if test="orderByField" >
+        ${orderBy}
+			</if>
+		</if>
+	</select>
+	<select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+		<include refid="Base_Column_List" />
+     FROM bas_factory WHERE 1=1 
+		<include refid="condition" />
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bas_factory
+    WHERE factory_no = #{factoryNo,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasFactory" >
+    DELETE FROM bas_factory
+    WHERE factory_no = #{factoryNo,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasFactory" >
+    INSERT INTO bas_factory (factory_no, factory_name, contacter, 
+      mobile_no, fax_no, email, 
+      post_code, contact_address, order_no, 
+      enable_flag, creator, create_time, 
+      modifier, modify_time, remarks
+      )
+    VALUES (#{factoryNo,jdbcType=VARCHAR}, #{factoryName,jdbcType=VARCHAR}, #{contacter,jdbcType=VARCHAR}, 
+      #{mobileNo,jdbcType=VARCHAR}, #{faxNo,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{postCode,jdbcType=VARCHAR}, #{contactAddress,jdbcType=VARCHAR}, #{orderNo,jdbcType=INTEGER}, 
+      #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}
+      )
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasFactory" >
+    INSERT INTO bas_factory
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="factoryNo != null" >
+        factory_no,
+			</if>
+			<if test="factoryName != null" >
+        factory_name,
+			</if>
+			<if test="contacter != null" >
+        contacter,
+			</if>
+			<if test="mobileNo != null" >
+        mobile_no,
+			</if>
+			<if test="faxNo != null" >
+        fax_no,
+			</if>
+			<if test="email != null" >
+        email,
+			</if>
+			<if test="postCode != null" >
+        post_code,
+			</if>
+			<if test="contactAddress != null" >
+        contact_address,
+			</if>
+			<if test="orderNo != null" >
+        order_no,
+			</if>
+			<if test="enableFlag != null" >
+        enable_flag,
+			</if>
+			<if test="creator != null" >
+        creator,
+			</if>
+			<if test="createTime != null" >
+        create_time,
+			</if>
+			<if test="modifier != null" >
+        modifier,
+			</if>
+			<if test="modifyTime != null" >
+        modify_time,
+			</if>
+			<if test="remarks != null" >
+        remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="factoryNo != null" >
+        #{factoryNo,jdbcType=VARCHAR},
+			</if>
+			<if test="factoryName != null" >
+        #{factoryName,jdbcType=VARCHAR},
+			</if>
+			<if test="contacter != null" >
+        #{contacter,jdbcType=VARCHAR},
+			</if>
+			<if test="mobileNo != null" >
+        #{mobileNo,jdbcType=VARCHAR},
+			</if>
+			<if test="faxNo != null" >
+        #{faxNo,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="postCode != null" >
+        #{postCode,jdbcType=VARCHAR},
+			</if>
+			<if test="contactAddress != null" >
+        #{contactAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null" >
+        #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null" >
+        #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null" >
+        #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null" >
+        #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasFactory" >
+    UPDATE bas_factory
+		<set >
+			<if test="factoryName != null" >
+        factory_name = #{factoryName,jdbcType=VARCHAR},
+			</if>
+			<if test="contacter != null" >
+        contacter = #{contacter,jdbcType=VARCHAR},
+			</if>
+			<if test="mobileNo != null" >
+        mobile_no = #{mobileNo,jdbcType=VARCHAR},
+			</if>
+			<if test="faxNo != null" >
+        fax_no = #{faxNo,jdbcType=VARCHAR},
+			</if>
+			<if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+			</if>
+			<if test="postCode != null" >
+        post_code = #{postCode,jdbcType=VARCHAR},
+			</if>
+			<if test="contactAddress != null" >
+        contact_address = #{contactAddress,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null" >
+        order_no = #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null" >
+        enable_flag = #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null" >
+        modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null" >
+        modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+    WHERE factory_no = #{factoryNo,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasFactory" >
+    UPDATE bas_factory
+    SET factory_name = #{factoryName,jdbcType=VARCHAR},
+      contacter = #{contacter,jdbcType=VARCHAR},
+      mobile_no = #{mobileNo,jdbcType=VARCHAR},
+      fax_no = #{faxNo,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      post_code = #{postCode,jdbcType=VARCHAR},
+      contact_address = #{contactAddress,jdbcType=VARCHAR},
+      order_no = #{orderNo,jdbcType=INTEGER},
+      enable_flag = #{enableFlag,jdbcType=INTEGER},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      modifier = #{modifier,jdbcType=VARCHAR},
+      modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE factory_no = #{factoryNo,jdbcType=VARCHAR}
+	</update>
+</mapper>

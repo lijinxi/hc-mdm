@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BasColorMapper">
+	<resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BasColor">
+		<id column="color_no" property="colorNo" jdbcType="VARCHAR" />
+		<result column="color_id" property="colorId" jdbcType="INTEGER" />
+		<result column="color_code" property="colorCode" jdbcType="VARCHAR" />
+		<result column="color_name" property="colorName" jdbcType="VARCHAR" />
+		<result column="color_series_code" property="colorSeriesCode" jdbcType="VARCHAR" />
+		<result column="color_series_name" property="colorSeriesName" jdbcType="VARCHAR" />
+		<result column="order_no" property="orderNo" jdbcType="INTEGER" />
+		<result column="enable_flag" property="enableFlag" jdbcType="INTEGER" />
+		<result column="creator" property="creator" jdbcType="VARCHAR" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="modifier" property="modifier" jdbcType="VARCHAR" />
+		<result column="modify_time" property="modifyTime" jdbcType="TIMESTAMP" />
+		<result column="remarks" property="remarks" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		color_no, color_id, color_code, color_name, color_series_code, color_series_name,
+		order_no, enable_flag, creator, create_time, modifier, modify_time, remarks
+	</sql>
+	<sql id="condition">
+		<if test="null!=params">
+			<if test="null!=params.colorSeriesName and ''!=params.colorSeriesName">
+				and color_series_name = #{params.colorSeriesName}
+			</if>
+			<if test="null!=params.colorNo and ''!=params.colorNo">
+				and color_no = #{params.colorNo}
+			</if>
+			<if test="null!=params.colorName and ''!=params.colorName">
+				and color_name like concat('%',#{params.colorName},'%')
+			</if>
+			<!--启用状态过滤-->
+			<if test="null!=params.enableFlag and ''!=params.enableFlag">
+    		and enable_flag =#{params.enableFlag}
+			</if>   
+			<if test="null!=params.queryCondition and ''!=params.queryCondition">
+				${params.queryCondition}
+			</if>
+		</if>
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_color
+		WHERE color_no = #{colorNo,jdbcType=VARCHAR}
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer">
+		SELECT COUNT(1) as s FROM bas_color WHERE 1=1
+		<include refid="condition" />
+	</select>
+	<select id="selectByPage" resultMap="BaseResultMap" parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_color WHERE 1=1
+		<include refid="condition" />
+		<if test="orderByField != null and ''!=orderByField">
+			ORDER BY ${orderByField}
+			<if test="orderByField">
+				${orderBy}
+			</if>
+		</if>
+	</select>
+
+	<select id="selectByParams" resultMap="BaseResultMap" parameterType="map">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM bas_color WHERE 1=1
+		<include refid="condition" />
+	</select>
+
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		DELETE FROM bas_color
+		WHERE color_no = #{colorNo,jdbcType=VARCHAR}
+	</delete>
+	<delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BasColor">
+		DELETE FROM bas_color
+		WHERE color_no = #{colorNo,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BasColor">
+		INSERT INTO bas_color (color_no, color_id, color_code,
+		color_name, color_series_code, color_series_name,
+		order_no, enable_flag, creator,
+		create_time, modifier, modify_time,
+		remarks)
+		VALUES (#{colorNo,jdbcType=VARCHAR}, #{colorId,jdbcType=INTEGER}, #{colorCode,jdbcType=VARCHAR},
+		#{colorName,jdbcType=VARCHAR}, #{colorSeriesCode,jdbcType=VARCHAR}, #{colorSeriesName,jdbcType=VARCHAR},
+		#{orderNo,jdbcType=INTEGER}, #{enableFlag,jdbcType=INTEGER}, #{creator,jdbcType=VARCHAR},
+		#{createTime,jdbcType=TIMESTAMP}, #{modifier,jdbcType=VARCHAR}, #{modifyTime,jdbcType=TIMESTAMP},
+		#{remarks,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BasColor">
+		INSERT INTO bas_color
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="colorNo != null">
+				color_no,
+			</if>
+			<if test="colorId != null">
+				color_id,
+			</if>
+			<if test="colorCode != null">
+				color_code,
+			</if>
+			<if test="colorName != null">
+				color_name,
+			</if>
+			<if test="colorSeriesCode != null">
+				color_series_code,
+			</if>
+			<if test="colorSeriesName != null">
+				color_series_name,
+			</if>
+			<if test="orderNo != null">
+				order_no,
+			</if>
+			<if test="enableFlag != null">
+				enable_flag,
+			</if>
+			<if test="creator != null">
+				creator,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="modifier != null">
+				modifier,
+			</if>
+			<if test="modifyTime != null">
+				modify_time,
+			</if>
+			<if test="remarks != null">
+				remarks,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="colorNo != null">
+				#{colorNo,jdbcType=VARCHAR},
+			</if>
+			<if test="colorId != null">
+				#{colorId,jdbcType=INTEGER},
+			</if>
+			<if test="colorCode != null">
+				#{colorCode,jdbcType=VARCHAR},
+			</if>
+			<if test="colorName != null">
+				#{colorName,jdbcType=VARCHAR},
+			</if>
+			<if test="colorSeriesCode != null">
+				#{colorSeriesCode,jdbcType=VARCHAR},
+			</if>
+			<if test="colorSeriesName != null">
+				#{colorSeriesName,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				#{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null">
+				#{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null">
+				#{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				#{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				#{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				#{remarks,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BasColor">
+		UPDATE bas_color
+		<set>
+			<if test="colorId != null">
+				color_id = #{colorId,jdbcType=INTEGER},
+			</if>
+			<if test="colorCode != null">
+				color_code = #{colorCode,jdbcType=VARCHAR},
+			</if>
+			<if test="colorName != null">
+				color_name = #{colorName,jdbcType=VARCHAR},
+			</if>
+			<if test="colorSeriesCode != null">
+				color_series_code = #{colorSeriesCode,jdbcType=VARCHAR},
+			</if>
+			<if test="colorSeriesName != null">
+				color_series_name = #{colorSeriesName,jdbcType=VARCHAR},
+			</if>
+			<if test="orderNo != null">
+				order_no = #{orderNo,jdbcType=INTEGER},
+			</if>
+			<if test="enableFlag != null">
+				enable_flag = #{enableFlag,jdbcType=INTEGER},
+			</if>
+			<if test="creator != null">
+				creator = #{creator,jdbcType=VARCHAR},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifier != null">
+				modifier = #{modifier,jdbcType=VARCHAR},
+			</if>
+			<if test="modifyTime != null">
+				modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="remarks != null">
+				remarks = #{remarks,jdbcType=VARCHAR},
+			</if>
+		</set>
+		WHERE color_no = #{colorNo,jdbcType=VARCHAR}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BasColor">
+		UPDATE bas_color
+		SET color_id = #{colorId,jdbcType=INTEGER},
+		color_code = #{colorCode,jdbcType=VARCHAR},
+		color_name = #{colorName,jdbcType=VARCHAR},
+		color_series_code = #{colorSeriesCode,jdbcType=VARCHAR},
+		color_series_name = #{colorSeriesName,jdbcType=VARCHAR},
+		order_no = #{orderNo,jdbcType=INTEGER},
+		enable_flag = #{enableFlag,jdbcType=INTEGER},
+		creator = #{creator,jdbcType=VARCHAR},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		modifier = #{modifier,jdbcType=VARCHAR},
+		modify_time = #{modifyTime,jdbcType=TIMESTAMP},
+		remarks = #{remarks,jdbcType=VARCHAR}
+		WHERE color_no = #{colorNo,jdbcType=VARCHAR}
+	</update>
+</mapper>

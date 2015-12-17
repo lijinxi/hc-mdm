@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hc.scm.mdm.dao.mapper.BillMaterialMapper" >
+  <resultMap id="BaseResultMap" type="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    <id column="bill_no" property="billNo" jdbcType="VARCHAR" />
+    <result column="maintain_type" property="maintainType" jdbcType="INTEGER" />
+    <result column="material_type" property="materialType" jdbcType="INTEGER" />
+    <result column="operator" property="operator" jdbcType="VARCHAR" />
+    <result column="creator" property="creator" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+    <result column="audit_time" property="auditTime" jdbcType="TIMESTAMP" />
+    <result column="bill_status" property="billStatus" jdbcType="TINYINT" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    bill_no, maintain_type, material_type, operator, creator, create_time, auditor, 
+    audit_time, bill_status, remarks
+  </sql>
+  <sql id="condition" >
+    <if test="null!=params" >
+      <if test="null!=params.billNo and ''!=params.billNo">
+        and	bill_no = #{params.billNo}
+      </if>
+      <if test="null!=params.materialType and ''!=params.materialType">
+        and	material_type = #{params.materialType}
+      </if>      
+      <if test="null!=params.queryCondition and ''!=params.queryCondition" >
+        ${params.queryCondition}
+      </if>
+      <if test="null!=params.creator and ''!=params.creator">
+        and	creator = #{params.creator}
+      </if>
+      <if test="null!=params.createTime1 and ''!=params.createTime1" >
+        and date(create_time) between #{params.createTime1} and #{params.createTime2}
+      </if>
+      <if test="null!=params.auditor and ''!=params.auditor">
+        and	auditor = #{params.auditor}
+      </if>
+      <if test="null!=params.auditTime1 and ''!=params.auditTime1" >
+        and date(audit_time) between #{params.auditTime1} and #{params.auditTime2}
+      </if>
+      <if test="null!=params.billStatus and ''!=params.billStatus">
+        and	bill_status = #{params.billStatus}
+      </if>
+    </if>
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    <include refid="Base_Column_List" />
+    FROM bill_material
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCount" resultType="java.lang.Integer" >
+    SELECT COUNT(1) as s FROM bill_material WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <select id="selectByPage" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bill_material WHERE 1=1 
+    <include refid="condition" />
+    <if test="orderByField != null and ''!=orderByField" >
+      ORDER BY ${orderByField}
+      <if test="orderByField" >
+        ${orderBy}
+      </if>
+    </if>
+  </select>
+  <select id="selectByParams" resultMap="BaseResultMap" parameterType="map" >
+    SELECT 
+    <include refid="Base_Column_List" />
+     FROM bill_material WHERE 1=1 
+    <include refid="condition" />
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    DELETE FROM bill_material
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByPrimarayKeyForModel" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    DELETE FROM bill_material
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    INSERT INTO bill_material (bill_no, maintain_type, material_type, 
+      operator, creator, create_time, 
+      auditor, audit_time, 
+      bill_status, remarks)
+    VALUES (#{billNo,jdbcType=VARCHAR}, #{maintainType,jdbcType=INTEGER}, #{materialType,jdbcType=INTEGER}, 
+      #{operator,jdbcType=VARCHAR}, #{creator,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{auditor,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, 
+      #{billStatus,jdbcType=TINYINT}, #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    INSERT INTO bill_material
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="billNo != null" >
+        bill_no,
+      </if>
+      <if test="maintainType != null" >
+        maintain_type,
+      </if>
+      <if test="materialType != null" >
+        material_type,
+      </if>
+      <if test="operator != null" >
+        operator,
+      </if>
+      <if test="creator != null" >
+        creator,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="auditor != null" >
+        auditor,
+      </if>
+      <if test="auditTime != null" >
+        audit_time,
+      </if>
+      <if test="billStatus != null" >
+        bill_status,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="billNo != null" >
+        #{billNo,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainType != null" >
+        #{maintainType,jdbcType=INTEGER},
+      </if>
+      <if test="materialType != null" >
+        #{materialType,jdbcType=INTEGER},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditor != null" >
+        #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="billStatus != null" >
+        #{billStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    UPDATE bill_material
+    <set >
+      <if test="maintainType != null" >
+        maintain_type = #{maintainType,jdbcType=INTEGER},
+      </if>
+      <if test="materialType != null" >
+        material_type = #{materialType,jdbcType=INTEGER},
+      </if>
+      <if test="operator != null" >
+        operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="creator != null" >
+        creator = #{creator,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditor != null" >
+        auditor = #{auditor,jdbcType=VARCHAR},
+      </if>
+      <if test="auditTime != null" >
+        audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="billStatus != null" >
+        bill_status = #{billStatus,jdbcType=TINYINT},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    UPDATE bill_material
+    SET maintain_type = #{maintainType,jdbcType=INTEGER},
+      material_type = #{materialType,jdbcType=INTEGER},
+      operator = #{operator,jdbcType=VARCHAR},
+      creator = #{creator,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      auditor = #{auditor,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      bill_status = #{billStatus,jdbcType=TINYINT},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+  </update>
+  
+  <!-- 审核 -->
+<update id="auditBillMaterial" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    UPDATE bill_material
+    SET auditor = #{auditor,jdbcType=VARCHAR},
+	    audit_time = #{auditTime,jdbcType=TIMESTAMP},
+	    bill_status = 20
+    WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+</update>
+
+<insert id="auditNewBasMaterial" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+    INSERT INTO bas_material (material_no, 
+      material_code, barcode_ean, material_name, 
+      specifications, old_code, inventory_category, 
+      material_source, tax_rate_no, tax_category, 
+      size_type_no, allow_sale, allow_delegate, 
+      allow_purchase, allow_produce, material_status, 
+      enable_flag, code_rule_no, advice_price, 
+      currency_no, season_no, parent_category_no, category_no, 
+      model_no, style_no, product_code, 
+      manufacturer, brand_no, special_code, development_times, 
+      lining, insoles, outer_bottom, style, sales_channels, 
+      vamp_material, color_no, gender_type, 
+      series, join_order_metting, textures, 
+      normal_unit,
+      purchase_unit,purchase_group,supply_category_no,
+      order_no,
+      material_type,creator,create_time,
+      modifier,modify_time,if_qc
+      )
+    SELECT material_no, 
+      material_code, barcode_ean, material_name, 
+      specifications, old_code, inventory_category, 
+      material_source, tax_rate_no, tax_category, 
+      size_type_no, allow_sale, allow_delegate, 
+      allow_purchase, allow_produce, material_status, 
+      enable_flag, code_rule_no, advice_price, 
+      currency_no, season_no, parent_category_no, category_no, 
+      model_no, style_no, product_code, 
+      manufacturer, brand_no, special_code, development_times, 
+      lining, insoles, outer_bottom, style, sales_channels, 
+      vamp_material, color_no, gender_type, 
+      series, join_order_metting, textures, 
+      normal_unit,
+      purchase_unit,purchase_group,supply_category_no,
+      order_no,
+      #{materialType,jdbcType=INTEGER},#{auditor,jdbcType=VARCHAR},#{auditTime,jdbcType=TIMESTAMP},
+      #{auditor,jdbcType=VARCHAR},#{auditTime,jdbcType=TIMESTAMP},if_qc
+    FROM  bill_material_dtl WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+</insert>
+ 
+   
+<insert id="auditNewBasMaterialSize" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+	 INSERT INTO bas_material_size (material_no, size_no, order_no,barcode)
+	 SELECT material_no, size_no,order_no,barcode 
+	 FROM bill_material_size WHERE bill_no = #{billNo,jdbcType=VARCHAR}
+</insert>
+
+<update id="auditUpdateBasMaterial" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+	UPDATE bas_material A,
+	(SELECT BB.* 
+		FROM bas_material AA 
+		INNER JOIN bill_material_dtl BB ON AA.material_no=BB.material_no 
+		WHERE BB.bill_no= #{billNo,jdbcType=VARCHAR}
+	) B
+	SET
+	  A.material_code=B.material_code, A.barcode_ean=B.barcode_ean, A.material_name=B.material_name, 
+	  A.specifications=B.specifications, A.old_code=B.old_code, A.inventory_category=B.inventory_category, 
+	  A.material_source=B.material_source, A.tax_rate_no=B.tax_rate_no, A.tax_category=B.tax_category, 
+	  A.size_type_no=B.size_type_no, A.allow_sale=B.allow_sale, A.allow_delegate=B.allow_delegate, 
+	  A.allow_purchase=B.allow_purchase, A.allow_produce=B.allow_produce, A.material_status=B.material_status, 
+	  A.enable_flag=B.enable_flag, A.code_rule_no=B.code_rule_no, A.advice_price=B.advice_price, 
+	  A.currency_no=B.currency_no, A.season_no=B.season_no, A.parent_category_no=B.parent_category_no, A.category_no=B.category_no, 
+	  A.model_no=B.model_no, A.style_no=B.style_no, A.product_code=B.product_code, 
+	  A.manufacturer=B.manufacturer, A.brand_no=B.brand_no, A.special_code=B.special_code, A.development_times=B.development_times,
+	  A.lining=B.lining, A.insoles=B.insoles, 
+	  A.outer_bottom=B.outer_bottom, A.style=B.style, A.sales_channels=B.sales_channels, 
+	  A.vamp_material=B.vamp_material, A.color_no=B.color_no, A.gender_type=B.gender_type, 
+	  A.series=B.series, A.join_order_metting=B.join_order_metting, A.textures=B.textures, 
+	  A.normal_unit=B.normal_unit,
+	  A.purchase_unit=B.purchase_unit,A.purchase_group=B.purchase_group,A.supply_category_no=B.supply_category_no,
+	  A.order_no=B.order_no,
+	  A.material_type=#{materialType,jdbcType=INTEGER},
+	  A.creator=#{auditor,jdbcType=VARCHAR},A.create_time=#{auditTime,jdbcType=TIMESTAMP},
+	  A.modifier=#{auditor,jdbcType=VARCHAR},A.modify_time=#{auditTime,jdbcType=TIMESTAMP},
+	  A.if_qc=B.if_qc
+	WHERE A.material_no=B.material_no
+</update>
+
+<delete id="auditDeleteBasMaterialSize" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial"  >
+	DELETE FROM bas_material_size
+	WHERE material_no IN (SELECT material_no FROM bill_material WHERE bill_no = #{billNo,jdbcType=VARCHAR})
+</delete>
+
+<insert id="auditNewBasBom" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+  INSERT INTO bas_nbom (material_no,modifier, modify_time)
+  SELECT 
+  	material_no,#{auditor,jdbcType=VARCHAR},#{auditTime,jdbcType=TIMESTAMP}
+  FROM bill_material_dtl WHERE bill_no = #{billNo,jdbcType=VARCHAR} AND material_source!='001'
+</insert>
+
+  <!--
+<insert id="auditNewBasBomList" parameterType="com.hc.scm.mdm.dao.entity.BillMaterial" >
+  INSERT INTO bas_bom_list (bom_id,order_no,brand_no,material_no,pd_type_no)
+  SELECT 
+  	A.bom_id,1 order_no,A.brand_no,A.material_no,'' pd_type_no
+  FROM bas_bom A
+  INNER JOIN bill_material_dtl B ON A.material_no=B.material_no
+  WHERE B.bill_no = #{billNo,jdbcType=VARCHAR} AND B.material_source!='001'
+</insert>
+-->
+
+</mapper>
